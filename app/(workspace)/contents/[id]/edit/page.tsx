@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ContentForm } from "@/components/contents/content-form";
+import { ContentForm } from "@/features/contents/components/content-form";
 
 export const metadata: Metadata = {
   title: "Edit content | Frame Creator Studio",
@@ -18,13 +18,13 @@ async function EditContentContent({
 
   return (
     <div className="mx-auto max-w-230">
-      <Button asChild className="-ml-2.5 mb-6 text-[11px] text-[#65736a]" variant="ghost">
-        <Link href="/contents"><ArrowLeft aria-hidden="true" className="size-[15px]" /> Back to pipeline</Link>
+      <Button asChild className="-ml-2.5 mb-6 text-[11px] text-muted-foreground" variant="ghost">
+        <Link href={`/contents/${id}`}><ArrowLeft aria-hidden="true" className="size-3.75" /> Back to pipeline</Link>
       </Button>
       <div className="mb-6.75">
-        <p className="mb-3 text-[10px] font-bold tracking-[0.14em] text-[#53816c]">CONTENT OPERATIONS</p>
-        <h1 className="m-0 font-serif text-[38px] font-normal leading-[1.1] text-[#1d2b24] max-[640px]:text-[34px]">Edit content</h1>
-        <p className="mt-2.75 max-w-67.5 text-[12px] leading-relaxed text-[#68746e] sm:text-[13px]">Record {id}</p>
+        <p className="mb-3 text-[10px] font-bold tracking-[0.14em] text-brand-section-label">CONTENT OPERATIONS</p>
+        <h1 className="m-0 font-serif text-[38px] font-normal leading-[1.1] text-studio-heading max-[640px]:text-[34px]">Edit content</h1>
+        <p className="mt-2.75 max-w-67.5 text-[12px] leading-relaxed text-muted-foreground sm:text-[13px]">Record {id}</p>
       </div>
       <ContentForm contentId={id} mode="edit" />
     </div>
@@ -37,7 +37,7 @@ export default function EditContentPage({
   params: Promise<{ id: string }>;
 }) {
   return (
-    <Suspense fallback={<div className="py-9 text-xs text-[#68746e]" role="status">Loading content record</div>}>
+    <Suspense fallback={<div className="py-9 text-xs text-muted-foreground" role="status">Loading content record</div>}>
       <EditContentContent params={params} />
     </Suspense>
   );

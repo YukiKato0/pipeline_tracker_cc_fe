@@ -20,7 +20,11 @@ import {
   type AuthMode,
 } from "@/features/auth/schemas/auth-form";
 
-export function AuthForm({ mode }: { mode: AuthMode }) {
+export interface AuthFormProps {
+  mode: AuthMode;
+}
+
+export function AuthForm({ mode }: AuthFormProps) {
   const router = useRouter();
   const isRegister = mode === "register";
 
@@ -141,9 +145,9 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
   return (
     <div className="w-full max-w-97.5">
       <div className="mb-7.5 max-[760px]:mb-6.25">
-        <p className="mb-3 text-[9px] font-bold tracking-[0.16em] text-[#56816a]">{isRegister ? "START YOUR STUDIO" : "WELCOME BACK"}</p>
-        <h2 className="m-0 font-serif text-[32px] font-normal leading-[1.15] text-[#1d2b24] max-[760px]:text-[29px]">{isRegister ? "Create your account" : "Sign in to your studio"}</h2>
-        <p className="mt-2.5 text-[12px] leading-[1.65] text-[#737e77]">
+        <p className="mb-3 text-[9px] font-bold tracking-[0.16em] text-brand-section-label">{isRegister ? "START YOUR STUDIO" : "WELCOME BACK"}</p>
+        <h2 className="m-0 font-serif text-[32px] font-normal leading-[1.15] text-studio-heading max-[760px]:text-[29px]">{isRegister ? "Create your account" : "Sign in to your studio"}</h2>
+        <p className="mt-2.5 text-[12px] leading-[1.65] text-muted-foreground">
           {isRegister
             ? "Set up your creator workspace and bring the next idea to life."
             : "Pick up where your next piece of work begins."}
@@ -151,16 +155,16 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
       </div>
 
       {errorMessage && (
-        <Alert className="mb-5 -mt-3 rounded-md border-[#ebc2bf] bg-[#fbf2f1] text-[11px] leading-normal text-[#8c2a24] **:data-[slot=alert-title]:text-[11px] **:data-[slot=alert-title]:font-semibold **:data-[slot=alert-description]:text-[10px] **:data-[slot=alert-description]:text-[#8c2a24]" role="alert">
-          <CircleAlert aria-hidden="true" className="size-4 text-[#bf382f]" />
+        <Alert className="mb-5 -mt-3 rounded-md border-feedback-destructive-border bg-feedback-destructive-bg text-[11px] leading-normal text-feedback-destructive-text **:data-[slot=alert-title]:text-[11px] **:data-[slot=alert-title]:font-semibold **:data-[slot=alert-description]:text-[10px] **:data-[slot=alert-description]:text-feedback-destructive-text" role="alert">
+          <CircleAlert aria-hidden="true" className="size-4 text-feedback-destructive-icon" />
           <AlertTitle>Autentikasi Gagal</AlertTitle>
           <AlertDescription>{errorMessage}</AlertDescription>
         </Alert>
       )}
 
       {successMessage && (
-        <Alert className="mb-5 -mt-3 rounded-md border-[#d5e4d4] bg-[#f2f6ef] text-[11px] leading-normal text-[#345642] **:data-[slot=alert-title]:text-[11px] **:data-[slot=alert-title]:font-semibold **:data-[slot=alert-description]:text-[10px] **:data-[slot=alert-description]:text-[#64776a]" role="status">
-          <CheckCircle2 aria-hidden="true" className="size-4 text-[#358257]" />
+        <Alert className="mb-5 -mt-3 rounded-md border-feedback-success-border bg-feedback-success-bg text-[11px] leading-normal text-feedback-success-text **:data-[slot=alert-title]:text-[11px] **:data-[slot=alert-title]:font-semibold **:data-[slot=alert-description]:text-[10px] **:data-[slot=alert-description]:text-feedback-success-subtle" role="status">
+          <CheckCircle2 aria-hidden="true" className="size-4 text-feedback-success-icon" />
           <AlertTitle>Sukses</AlertTitle>
           <AlertDescription>{successMessage}</AlertDescription>
         </Alert>
@@ -181,7 +185,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
               placeholder="Nama lengkap"
               value={values.name}
             />
-            {errors.name && <p className="m-0 text-[10px] leading-[1.4] text-[#a33e37]" id="name-error">{errors.name}</p>}
+            {errors.name && <p className="m-0 text-[10px] leading-[1.4] text-feedback-destructive-subtle" id="name-error">{errors.name}</p>}
           </div>
         )}
 
@@ -200,13 +204,13 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
             placeholder="nama@email.com"
             value={values.email}
           />
-          {errors.email && <p className="m-0 text-[10px] leading-[1.4] text-[#a33e37]" id="email-error">{errors.email}</p>}
+          {errors.email && <p className="m-0 text-[10px] leading-[1.4] text-feedback-destructive-subtle" id="email-error">{errors.email}</p>}
         </div>
 
         <div className="flex min-w-0 flex-col gap-1.75">
           <div className="flex items-center justify-between">
             <Label htmlFor="password">Password</Label>
-            {!isRegister && <span className="text-[10px] text-[#88938b]">Minimal 8 karakter</span>}
+            {!isRegister && <span className="text-[10px] text-muted-foreground">Minimal 8 karakter</span>}
           </div>
           <div className="relative">
             <Input
@@ -220,11 +224,11 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
               onChange={(event) => updateField("password", event.target.value)}
               placeholder="Masukkan password"
               value={values.password}
-              className="h-10.75 rounded-[5px] border-[#d9e0d9] bg-white px-3 text-[12px] text-[#24332b] shadow-none placeholder:text-[#a3ada5] focus-visible:border-[#4f8d6a] focus-visible:ring-[3px] focus-visible:ring-[#4f8d6a]/15 aria-invalid:border-[#bd5149]"
+              className="h-10.75 rounded-[5px] border-input bg-card px-3 text-[12px] text-studio-title-secondary shadow-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/15 aria-invalid:border-destructive"
             />
             <Button
               aria-label={isPasswordVisible ? "Sembunyikan password" : "Tampilkan password"}
-              className="absolute right-1 top-0.75 size-9 text-[#76827a]"
+              className="absolute right-1 top-0.75 size-9 text-muted-foreground"
               onClick={() => setIsPasswordVisible((isVisible) => !isVisible)}
               size="icon"
               type="button"
@@ -235,7 +239,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
             </Button>
           </div>
           {errors.password && (
-            <p className="m-0 text-[10px] leading-[1.4] text-[#a33e37]" id="password-error">{errors.password}</p>
+            <p className="m-0 text-[10px] leading-[1.4] text-feedback-destructive-subtle" id="password-error">{errors.password}</p>
           )}
         </div>
 
@@ -253,10 +257,10 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
               onChange={(event) => updateField("confirmPassword", event.target.value)}
               placeholder="Ulangi password"
               value={values.confirmPassword}
-              className="h-10.75 rounded-[5px] border-[#d9e0d9] bg-white px-3 text-[12px] text-[#24332b] shadow-none placeholder:text-[#a3ada5] focus-visible:border-[#4f8d6a] focus-visible:ring-[3px] focus-visible:ring-[#4f8d6a]/15 aria-invalid:border-[#bd5149]"
+              className="h-10.75 rounded-[5px] border-input bg-card px-3 text-[12px] text-studio-title-secondary shadow-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/15 aria-invalid:border-destructive"
             />
             {errors.confirmPassword && (
-              <p className="m-0 text-[10px] leading-[1.4] text-[#a33e37]" id="confirm-password-error">
+              <p className="m-0 text-[10px] leading-[1.4] text-feedback-destructive-subtle" id="confirm-password-error">
                 {errors.confirmPassword}
               </p>
             )}
@@ -264,7 +268,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
         )}
 
         <Button
-          className="mt-0.75 h-11.25 justify-between rounded-[5px] bg-[#1c644c] px-3.75 text-[12px] font-semibold text-white hover:bg-[#174f3d] disabled:opacity-60"
+          className="mt-0.75 h-11.25 justify-between rounded-[5px] bg-primary px-3.75 text-[12px] font-semibold text-primary-foreground hover:bg-primary-hover disabled:opacity-60"
           type="submit"
           size="lg"
           disabled={isSubmitting}
@@ -278,12 +282,13 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
         </Button>
       </form>
 
-      <p className="mt-5.5 text-center text-[11px] text-[#77827a]">
+      <p className="mt-5.5 text-center text-[11px] text-muted-foreground">
         {isRegister ? "Already have an account?" : "New to Frame?"}{" "}
-        <Link className="font-semibold text-[#216348] no-underline hover:underline hover:underline-offset-[3px]" href={isRegister ? "/login" : "/register"}>
+        <Link className="font-semibold text-primary no-underline hover:underline hover:underline-offset-[3px]" href={isRegister ? "/login" : "/register"}>
           {isRegister ? "Sign in" : "Create an account"}
         </Link>
       </p>
     </div>
   );
 }
+

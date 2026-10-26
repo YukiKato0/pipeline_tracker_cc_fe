@@ -84,6 +84,10 @@ export async function toggleChecklistItem(
   return unwrap(result);
 }
 
+export async function deleteChecklistItem(id: string | number): Promise<void> {
+  await apiClient.delete<void>(API_ROUTES.checklists.delete(id));
+}
+
 export async function recordMetricSnapshot(
   contentId: string | number,
   payload: ContentMetricValues
