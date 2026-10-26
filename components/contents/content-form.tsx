@@ -373,7 +373,7 @@ export function ContentForm({
 
         <div className="mt-0.75 flex justify-end gap-2.25 border-t border-[#e8ede8] pt-4.5 max-[640px]:flex-col-reverse">
           <Button asChild variant="outline" disabled={isSubmitting}>
-            <Link href="/contents">Cancel</Link>
+            <Link href={`/contents/${contentId}`}>Cancel</Link>
           </Button>
           <Button
             className="min-h-9.75 rounded-[5px] bg-[#1c644c] px-3.25 text-[11px] font-semibold text-white hover:bg-[#174f3d] disabled:opacity-60 max-[640px]:w-full"

@@ -19,7 +19,7 @@ async function EditContentContent({
   return (
     <div className="mx-auto max-w-230">
       <Button asChild className="-ml-2.5 mb-6 text-[11px] text-[#65736a]" variant="ghost">
-        <Link href="/contents"><ArrowLeft aria-hidden="true" className="size-[15px]" /> Back to pipeline</Link>
+        <Link href={`/contents/${id}`}><ArrowLeft aria-hidden="true" className="size-3.75" /> Back to pipeline</Link>
       </Button>
       <div className="mb-6.75">
         <p className="mb-3 text-[10px] font-bold tracking-[0.14em] text-[#53816c]">CONTENT OPERATIONS</p>
