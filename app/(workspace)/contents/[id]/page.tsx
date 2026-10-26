@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { ContentDetailPreview } from "@/components/contents/content-detail-preview";
+import { ContentDetailPreview } from "@/features/contents/components/content-detail-preview";
 import { contentDetailPreview } from "@/features/contents/mock/content-detail-preview";
 import { getContentById } from "@/features/contents/services/contents-service";
 import type { ContentDetailPreviewRecord } from "@/features/contents/types/content-detail";
@@ -37,7 +37,7 @@ async function ContentDetailRoute({ params }: { params: Promise<{ id: string }> 
   if (loadError) {
     return (
       <div className="mx-auto max-w-330 py-8">
-        <Alert className="mb-4 rounded-md border-[#ebc2bf] bg-[#fbf2f1] text-[#8c2a24]">
+        <Alert className="mb-4 rounded-md border-feedback-destructive-border bg-feedback-destructive-bg text-feedback-destructive-text">
           <AlertTitle>Konten Tidak Dapat Dimuat</AlertTitle>
           <AlertDescription>{loadError}</AlertDescription>
         </Alert>
@@ -57,7 +57,7 @@ async function ContentDetailRoute({ params }: { params: Promise<{ id: string }> 
 
 export default function ContentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   return (
-    <Suspense fallback={<div className="py-9 text-xs text-[#68746e]" role="status">Loading content detail...</div>}>
+    <Suspense fallback={<div className="py-9 text-xs text-muted-foreground" role="status">Loading content detail...</div>}>
       <ContentDetailRoute params={params} />
     </Suspense>
   );
