@@ -187,4 +187,3 @@ export function WorkspaceShell({ children }: { children: React.ReactNode }) {
 }
 
 export default WorkspaceShell;
-
