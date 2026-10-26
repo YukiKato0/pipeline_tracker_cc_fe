@@ -6,7 +6,6 @@ import { useState, type FormEvent } from "react";
 import {
   ArrowLeft,
   ArrowRight,
-  Check,
   CheckCircle2,
   CircleAlert,
   ClipboardCheck,
@@ -56,6 +55,7 @@ import type {
 } from "@/features/contents/types/content-detail";
 import {
   addChecklistItem,
+  deleteChecklistItem,
   deleteContent,
   recordMetricSnapshot,
   toggleChecklistItem as apiToggleChecklistItem,
@@ -101,7 +101,6 @@ export function ContentDetailPreview({
   );
   const [metricValues, setMetricValues] = useState<MetricFormValues>(initialMetricFormValues);
   const [metricErrors, setMetricErrors] = useState<MetricFormErrors>({});
-
   // Loading & confirmation states
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [isAddingTask, setIsAddingTask] = useState(false);
@@ -185,9 +184,29 @@ export function ContentDetailPreview({
     }
   }
 
-  function deleteChecklistItem(itemId: string | number) {
-    setChecklist((items) => items.filter((item) => item.id !== itemId));
-    setFeedback({ type: "success", message: "Checklist item dihapus." });
+  async function handleDeleteChecklistItem(item: ChecklistPreviewItem) {
+    const previousChecklist = [...checklist];
+
+    // Optimistic UI: hapus item dari state langsung
+    setChecklist((items) => items.filter((i) => i.id !== item.id));
+    setFeedback(null);
+
+    if (isSample) {
+      setFeedback({ type: "success", message: "Checklist item dihapus dari pratinjau lokal." });
+      return;
+    }
+
+    try {
+      await deleteChecklistItem(item.id);
+      setFeedback({ type: "success", message: "Checklist item berhasil dihapus dari server." });
+    } catch (error) {
+      // Rollback on failure
+      setChecklist(previousChecklist);
+      setFeedback({
+        type: "error",
+        message: getErrorMessage(error, "Gagal menghapus checklist item dari server."),
+      });
+    }
   }
 
   function updateMetric(field: MetricField, value: string) {
@@ -398,8 +417,8 @@ export function ContentDetailPreview({
         <div className="flex flex-none items-center gap-2.25 max-[640px]:w-full max-[640px]:justify-between">
           <Badge
             className={`h-6.25 rounded text-[8px] font-bold tracking-[0.08em] ${isSample
-                ? "border-[#e8dbb3] bg-[#f8f2dd] text-[#796735]"
-                : "border-[#d0e5d4] bg-[#edf6ef] text-[#2c724e]"
+              ? "border-[#e8dbb3] bg-[#f8f2dd] text-[#796735]"
+              : "border-[#d0e5d4] bg-[#edf6ef] text-[#2c724e]"
               }`}
             variant="outline"
           >
@@ -424,8 +443,8 @@ export function ContentDetailPreview({
       {feedback && (
         <Alert
           className={`mb-5 rounded-[7px] px-3.5 py-3 text-[11px] ${feedback.type === "success"
-              ? "border-[#d5e4d4] bg-[#f2f6ef] text-[#345642]"
-              : "border-[#ebc2bf] bg-[#fbf2f1] text-[#8c2a24]"
+            ? "border-[#d5e4d4] bg-[#f2f6ef] text-[#345642]"
+            : "border-[#ebc2bf] bg-[#fbf2f1] text-[#8c2a24]"
             }`}
           role={feedback.type === "error" ? "alert" : "status"}
         >
@@ -481,11 +500,10 @@ export function ContentDetailPreview({
                     >
                       {item.task_name}
                     </label>
-                    {item.is_completed && <Check aria-hidden="true" className="flex-none text-[#4c8968]" size={15} />}
                     <Button
                       aria-label={`Delete checklist item ${item.task_name}`}
                       className="h-7 min-w-7 rounded-[5px] border-[#dce4dc] px-1.5 text-[9px] text-[#5a6d60] hover:text-[#a03830]"
-                      onClick={() => deleteChecklistItem(item.id)}
+                      onClick={() => handleDeleteChecklistItem(item)}
                       type="button"
                       variant="outline"
                     >
