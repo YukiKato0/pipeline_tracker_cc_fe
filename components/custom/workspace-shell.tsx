@@ -8,6 +8,8 @@ import {
   Layers3,
   LogOut,
   Menu,
+  PanelLeftClose,
+  PanelLeftOpen,
   Radio,
   X,
 } from "lucide-react";
@@ -82,6 +84,7 @@ function useCurrentUser(): SessionUser | null {
 
 export function WorkspaceShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobileNavigationOpen, setIsMobileNavigationOpen] = useState(false);
   const currentUser = useCurrentUser();
 
@@ -94,7 +97,13 @@ export function WorkspaceShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-screen">
-      <aside className="flex min-h-screen flex-[0_0_248px] flex-col border-r border-border bg-sidebar px-4.5 py-7 max-[800px]:flex-[0_0_218px] max-[800px]:px-3.5 max-[640px]:hidden">
+      <aside
+        id="desktop-sidebar"
+        aria-label="Sidebar workspace"
+        className={`flex min-h-screen flex-[0_0_248px] flex-col border-r border-border bg-sidebar px-4.5 py-7 max-[800px]:flex-[0_0_218px] max-[800px]:px-3.5 max-[640px]:hidden ${
+          !isSidebarOpen ? "hidden" : ""
+        }`}
+      >
         <WorkspaceBrand />
         <div className="my-9.5 mb-8.5 flex min-h-14.5 w-full items-center gap-2.5 rounded-lg border border-border bg-card p-2.25 text-left text-foreground shadow-xs">
           <span suppressHydrationWarning className="inline-flex size-8.5 flex-[0_0_34px] items-center justify-center rounded-md bg-brand-gold-subtle font-serif text-[17px] text-brand-gold-dark" aria-hidden="true">
@@ -113,7 +122,7 @@ export function WorkspaceShell({ children }: { children: React.ReactNode }) {
           </span>
           <button
             onClick={handleLogout}
-            className="flex items-center gap-1 text-[10px] text-destructive hover:underline"
+            className="flex cursor-pointer items-center gap-1 text-[10px] text-destructive hover:underline"
             type="button"
           >
             <LogOut size={12} aria-hidden="true" />
@@ -125,16 +134,35 @@ export function WorkspaceShell({ children }: { children: React.ReactNode }) {
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex h-15.5 items-center justify-between border-b border-border bg-sidebar/85 backdrop-blur-xs px-10.5 max-[800px]:px-6.25 max-[640px]:h-14.5 max-[640px]:justify-between max-[640px]:px-4">
           <div className="flex items-center gap-3">
+            {/* Desktop aside toggle button */}
+            <button
+              aria-label={isSidebarOpen ? "Tutup sidebar" : "Buka sidebar"}
+              title={isSidebarOpen ? "Tutup sidebar" : "Buka sidebar"}
+              aria-expanded={isSidebarOpen}
+              aria-controls="desktop-sidebar"
+              className="hidden size-9 flex-[0_0_36px] cursor-pointer items-center justify-center rounded-md border border-border bg-card p-0 text-studio-body transition-colors hover:bg-muted hover:text-foreground min-[641px]:inline-flex"
+              onClick={() => setIsSidebarOpen((isOpen) => !isOpen)}
+              type="button"
+            >
+              {isSidebarOpen ? (
+                <PanelLeftClose size={18} aria-hidden="true" />
+              ) : (
+                <PanelLeftOpen size={18} aria-hidden="true" />
+              )}
+            </button>
+
+            {/* Mobile aside / navigation toggle button */}
             <button
               aria-label={isMobileNavigationOpen ? "Close navigation" : "Open navigation"}
               aria-expanded={isMobileNavigationOpen}
               aria-controls="mobile-navigation"
-              className="hidden size-9 flex-[0_0_36px] items-center justify-center rounded-md border border-border bg-transparent p-0 text-studio-body max-[640px]:inline-flex"
+              className="hidden size-9 flex-[0_0_36px] cursor-pointer items-center justify-center rounded-md border border-border bg-transparent p-0 text-studio-body transition-colors hover:bg-muted hover:text-foreground max-[640px]:inline-flex"
               onClick={() => setIsMobileNavigationOpen((isOpen) => !isOpen)}
               type="button"
             >
               {isMobileNavigationOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
+
             <div className="flex items-center gap-2.5 text-[11px] text-muted-foreground max-[640px]:gap-1.75 max-[640px]:text-[10px]">
               <span>My studio</span>
               <span className="text-border" aria-hidden="true">/</span>
@@ -152,7 +180,7 @@ export function WorkspaceShell({ children }: { children: React.ReactNode }) {
             )}
             <button
               onClick={handleLogout}
-              className="flex items-center gap-1.5 rounded-[5px] border border-border bg-card px-2.5 py-1 text-[11px] font-medium text-studio-tag-text transition-colors hover:border-feedback-destructive-hover-border hover:bg-feedback-destructive-hover-bg hover:text-feedback-destructive-hover-text"
+              className="flex cursor-pointer items-center gap-1.5 rounded-[5px] border border-border bg-card px-2.5 py-1 text-[11px] font-medium text-studio-tag-text transition-colors hover:border-feedback-destructive-hover-border hover:bg-feedback-destructive-hover-bg hover:text-feedback-destructive-hover-text"
               type="button"
             >
               <LogOut size={13} aria-hidden="true" />

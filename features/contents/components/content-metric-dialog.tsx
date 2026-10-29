@@ -45,7 +45,7 @@ export function ContentMetricDialog({
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         <Button
-          className="h-8.5 rounded-[5px] border-input px-2.75 text-[11px] text-studio-body"
+          className="h-8 border-input px-2.75 text-xs text-studio-body"
           size="sm"
           type="button"
           variant="outline"
