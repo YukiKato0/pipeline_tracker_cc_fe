@@ -29,7 +29,7 @@ export function ContentDetailMetrics({
           <h2 className="m-0 text-[16px] font-semibold text-studio-title-secondary" id="metrics-title">Analytics snapshots</h2>
         </div>
         <div className="flex items-center gap-2">
-          <Badge className="h-6 rounded border-studio-pill-border bg-studio-pill-bg text-[9px] text-studio-pill-text" variant="outline">
+          <Badge className="h-8 border-studio-pill-border bg-studio-pill-bg text-xs text-studio-pill-text" variant="outline">
             {metricHistory.length} SNAPSHOTS
           </Badge>
           {recordMetricSlot}
