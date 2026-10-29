@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import {
-  ArrowLeft,
   ArrowRight,
   CheckCircle2,
   CircleAlert,
@@ -370,23 +369,6 @@ export function ContentDetailPreview({
 
   return (
     <div className="mx-auto max-w-330">
-      <div className="mb-6 flex items-center justify-between">
-        <Button asChild className="-ml-2.5 text-[11px] text-muted-foreground" variant="ghost">
-          <Link href="/contents">
-            <ArrowLeft aria-hidden="true" className="size-3.75" /> Back to pipeline
-          </Link>
-        </Button>
-        <Button
-          onClick={() => setIsDeleteDialogOpen(true)}
-          variant="outline"
-          className="h-8 border-feedback-destructive-hover-border text-[10px] text-destructive hover:bg-feedback-destructive-hover-bg hover:text-feedback-destructive-hover-text"
-          type="button"
-        >
-          <Trash2 size={13} className="mr-1.5" aria-hidden="true" />
-          Delete content
-        </Button>
-      </div>
-
       <header className="mb-5.75 flex items-end justify-between gap-5.5 max-[640px]:flex-col max-[640px]:items-start max-[640px]:gap-3.5">
         <div>
           <p className="mb-3 text-[10px] font-bold tracking-[0.14em] text-brand-section-label">CONTENT DETAIL</p>
@@ -403,13 +385,22 @@ export function ContentDetailPreview({
         </div>
         <div className="flex flex-none items-center gap-2.25 max-[640px]:w-full max-[640px]:justify-between">
           <Badge
-            className="h-6.25 rounded border-studio-pill-border bg-studio-pill-bg text-[8px] font-bold tracking-[0.08em] text-studio-pill-text"
+            className="h-8 border-studio-pill-border bg-studio-pill-bg text-[8px] font-bold tracking-[0.08em] text-studio-pill-text"
             variant="outline"
           >
             {isSample ? "PREVIEW DATA" : "LIVE BACKEND"}
           </Badge>
-          <Button asChild className="h-8.75 rounded-[5px] border-input bg-card text-[10px] text-studio-body" variant="outline">
+          <Button asChild className="h-8 border-input bg-card text-xs text-studio-body" variant="outline">
             <Link href={`/contents/${content.id}/edit`}>Edit details</Link>
+          </Button>
+          <Button
+            onClick={() => setIsDeleteDialogOpen(true)}
+            variant="outline"
+            className="h-8 border-feedback-destructive-hover-border text-xs text-destructive hover:bg-feedback-destructive-hover-bg hover:text-feedback-destructive-hover-text"
+            type="button"
+          >
+            <Trash2 size={13} className="mr-1.5" aria-hidden="true" />
+            Delete content
           </Button>
         </div>
       </header>
@@ -426,11 +417,10 @@ export function ContentDetailPreview({
 
       {feedback && (
         <Alert
-          className={`mb-5 rounded-[7px] px-3.5 py-3 text-[11px] ${
-            feedback.type === "success"
-              ? "border-feedback-success-border bg-feedback-success-bg text-feedback-success-text"
-              : "border-feedback-destructive-border bg-feedback-destructive-bg text-feedback-destructive-text"
-          }`}
+          className={`mb-5 rounded-[7px] px-3.5 py-3 text-[11px] ${feedback.type === "success"
+            ? "border-feedback-success-border bg-feedback-success-bg text-feedback-success-text"
+            : "border-feedback-destructive-border bg-feedback-destructive-bg text-feedback-destructive-text"
+            }`}
           role={feedback.type === "error" ? "alert" : "status"}
         >
           {feedback.type === "success" ? (
@@ -527,16 +517,14 @@ export function ContentDetailPreview({
             <ol className="mb-4.5 ml-1.25 flex list-none flex-col border-l border-border p-0">
               {CONTENT_STATUSES.map((stage, index) => (
                 <li
-                  className={`relative flex min-h-7.75 items-center gap-2.5 pl-3 text-[10px] ${
-                    index === currentStatusIndex ? "font-semibold text-primary" : "text-muted-foreground"
-                  }`}
+                  className={`relative flex min-h-7.75 items-center gap-2.5 pl-3 text-[10px] ${index === currentStatusIndex ? "font-semibold text-primary" : "text-muted-foreground"
+                    }`}
                   aria-current={index === currentStatusIndex ? "step" : undefined}
                   key={stage}
                 >
                   <span
-                    className={`absolute -left-1.25 size-2.25 rounded-full border-2 border-background ${
-                      index <= currentStatusIndex ? "bg-primary shadow-[0_0_0_1px_currentColor]" : "bg-border"
-                    }`}
+                    className={`absolute -left-1.25 size-2.25 rounded-full border-2 border-background ${index <= currentStatusIndex ? "bg-primary shadow-[0_0_0_1px_currentColor]" : "bg-border"
+                      }`}
                   />
                   <span>{CONTENT_STATUS_LABELS[stage]}</span>
                 </li>

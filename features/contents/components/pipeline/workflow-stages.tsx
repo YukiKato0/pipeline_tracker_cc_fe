@@ -2,10 +2,9 @@ import { CONTENT_STATUS_LABELS, CONTENT_STATUSES, type ContentStatus } from "@/f
 
 interface WorkflowStagesProps {
   totalItems: number;
-  statusCounts: Record<ContentStatus, number>;
 }
 
-export function WorkflowStages({ totalItems, statusCounts }: WorkflowStagesProps) {
+export function WorkflowStages({ totalItems }: WorkflowStagesProps) {
   return (
     <div className="flex min-h-23 items-center justify-between border-b border-studio-card-border-subtle px-6.25 py-5 max-[640px]:min-h-19.75 max-[640px]:px-4">
       <div>

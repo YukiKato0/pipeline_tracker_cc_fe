@@ -122,7 +122,6 @@ export function AuthForm({ mode }: AuthFormProps) {
           token: token,
         });
 
-        setSuccessMessage("Berhasil masuk. Mengalihkan ke workspace...");
         setTimeout(() => {
           router.push("/contents");
         }, 500);
@@ -139,6 +138,8 @@ export function AuthForm({ mode }: AuthFormProps) {
           email: msg,
         }));
       }
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
