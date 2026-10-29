@@ -16,8 +16,7 @@ import { ContentPipelineHeader } from "@/features/contents/components/pipeline/c
 import { BackendErrorAlert } from "@/features/contents/components/pipeline/backend-error-alert";
 import { WorkflowStages, WorkflowStagesList } from "@/features/contents/components/pipeline/workflow-stages";
 import { ContentFilterForm } from "@/features/contents/components/pipeline/content-filter-form";
-import { ContentCard } from "@/features/contents/components/pipeline/content-card";
-import { ContentEmptyState } from "@/features/contents/components/pipeline/content-empty-state";
+import { ContentKanbanBoard } from "@/features/contents/components/pipeline/content-kanban-board";
 import { ContentPipelineFooter } from "@/features/contents/components/pipeline/content-pipeline-footer";
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
@@ -97,7 +96,7 @@ async function ContentPipelineContent({
       {backendError && <BackendErrorAlert message={backendError} />}
 
       <section aria-label="Content lifecycle" className="overflow-hidden rounded-[9px] border border-studio-card-border bg-card/85 shadow-sm">
-        <WorkflowStages totalItems={contents.length} statusCounts={statusCounts} />
+        <WorkflowStages totalItems={contents.length} />
         <WorkflowStagesList statusCounts={statusCounts} />
 
         <ContentFilterForm
@@ -110,15 +109,10 @@ async function ContentPipelineContent({
           activeChannel={activeChannel}
         />
 
-        {displayedContents.length > 0 ? (
-          <div className="grid grid-cols-1 gap-4 p-6 sm:grid-cols-2 lg:grid-cols-3 max-[640px]:p-3.5">
-            {displayedContents.map((content) => (
-              <ContentCard key={String(content.id)} content={content} />
-            ))}
-          </div>
-        ) : (
-          <ContentEmptyState hasFilters={hasFilters} />
-        )}
+        <ContentKanbanBoard
+          initialContents={displayedContents}
+          hasFilters={hasFilters}
+        />
       </section>
 
       <ContentPipelineFooter />
