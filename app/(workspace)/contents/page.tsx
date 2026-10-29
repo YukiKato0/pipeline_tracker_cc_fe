@@ -14,7 +14,7 @@ import { getErrorMessage } from "@/lib/api/errors";
 // Import komponen modular
 import { ContentPipelineHeader } from "@/features/contents/components/pipeline/content-pipeline-header";
 import { BackendErrorAlert } from "@/features/contents/components/pipeline/backend-error-alert";
-import { WorkflowStages, WorkflowStagesList } from "@/features/contents/components/pipeline/workflow-stages";
+import { WorkflowStages } from "@/features/contents/components/pipeline/workflow-stages";
 import { ContentFilterForm } from "@/features/contents/components/pipeline/content-filter-form";
 import { ContentKanbanBoard } from "@/features/contents/components/pipeline/content-kanban-board";
 import { ContentPipelineFooter } from "@/features/contents/components/pipeline/content-pipeline-footer";
@@ -90,14 +90,13 @@ async function ContentPipelineContent({
   });
 
   return (
-    <div className="mx-auto max-w-342.5">
+    <div className="mx-auto w-full">
       <ContentPipelineHeader />
 
       {backendError && <BackendErrorAlert message={backendError} />}
 
       <section aria-label="Content lifecycle" className="overflow-hidden rounded-[9px] border border-studio-card-border bg-card/85 shadow-sm">
         <WorkflowStages totalItems={contents.length} />
-        <WorkflowStagesList statusCounts={statusCounts} />
 
         <ContentFilterForm
           channels={channels}
