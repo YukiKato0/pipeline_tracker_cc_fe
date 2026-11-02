@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, type FormEvent } from "react";
 import {
   ArrowRight,
   ExternalLink,
@@ -53,6 +53,15 @@ import { ContentPublishDialog } from "@/features/contents/components/content-pub
 import { ContentMetricDialog } from "@/features/contents/components/content-metric-dialog";
 import { ContentDetailChecklists } from "@/features/contents/components/content-detail-checklists";
 import { ContentDetailMetrics } from "@/features/contents/components/content-detail-metrics";
+import { getSession, subscribeSession, type SessionUser } from "@/lib/auth/session";
+
+function useCurrentUser(): SessionUser | null {
+  return useSyncExternalStore(
+    subscribeSession,
+    getSession,
+    () => null
+  );
+}
 
 export interface ContentDetailPreviewProps {
   content: ContentDetailPreviewRecord;
@@ -65,6 +74,8 @@ export function ContentDetailPreview({
 }: ContentDetailPreviewProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const currentUser = useCurrentUser();
+  const canManageContent = currentUser?.role !== "editor";
 
   const [status, setStatus] = useState<ContentStatus>(content.status);
   const [publishedUrl, setPublishedUrl] = useState(content.published_url ?? "");
@@ -404,18 +415,22 @@ export function ContentDetailPreview({
           </div>
         </div>
         <div className="flex flex-none items-center gap-2.25 max-[640px]:w-full max-[640px]:justify-between">
-          <Button asChild className="h-8 border-input bg-card text-xs text-studio-body" variant="outline">
-            <Link href={`/contents/${content.id}/edit`}>Edit details</Link>
-          </Button>
-          <Button
-            onClick={() => setIsDeleteDialogOpen(true)}
-            variant="outline"
-            className="h-8 border-feedback-destructive-hover-border text-xs text-destructive hover:bg-feedback-destructive-hover-bg hover:text-feedback-destructive-hover-text cursor-pointer"
-            type="button"
-          >
-            <Trash2 size={13} className="mr-1.5" aria-hidden="true" />
-            Delete content
-          </Button>
+          {canManageContent && (
+            <>
+              <Button asChild className="h-8 border-input bg-card text-xs text-studio-body" variant="outline">
+                <Link href={`/contents/${content.id}/edit`}>Edit details</Link>
+              </Button>
+              <Button
+                onClick={() => setIsDeleteDialogOpen(true)}
+                variant="outline"
+                className="h-8 border-feedback-destructive-hover-border text-xs text-destructive hover:bg-feedback-destructive-hover-bg hover:text-feedback-destructive-hover-text cursor-pointer"
+                type="button"
+              >
+                <Trash2 size={13} className="mr-1.5" aria-hidden="true" />
+                Delete content
+              </Button>
+            </>
+          )}
         </div>
       </header>
 
@@ -448,6 +463,7 @@ export function ContentDetailPreview({
             onAddTask={handleAddChecklistItem}
             onToggleTask={handleToggleChecklistItem}
             onDeleteTask={requestDeleteChecklistItem}
+            canModifyChecklist={currentUser?.role !== "editor"}
           />
 
           {/* Creative Brief */}
@@ -457,9 +473,11 @@ export function ContentDetailPreview({
                 <p className="mb-1.25 text-[8px] font-bold tracking-[0.14em] text-studio-label-muted">CREATIVE BRIEF</p>
                 <h2 className="m-0 text-sm font-semibold text-studio-title-secondary" id="brief-title">Description & script</h2>
               </div>
-              <Button asChild className="h-7.5 px-2.25 text-[10px] text-primary" variant="ghost">
-                <Link href={`/contents/${content.id}/edit`}>Edit</Link>
-              </Button>
+              {canManageContent && (
+                <Button asChild className="h-7.5 px-2.25 text-[10px] text-primary" variant="ghost">
+                  <Link href={`/contents/${content.id}/edit`}>Edit</Link>
+                </Button>
+              )}
             </div>
             <p className="m-0 text-[11px] leading-[1.7] text-studio-body">
               {content.description || <span className="italic text-muted-foreground">No content description yet.</span>}
@@ -536,28 +554,29 @@ export function ContentDetailPreview({
                 </li>
               ))}
             </ol>
-
-            <Button
-              className="h-9.5 w-full bg-primary text-[10px] font-semibold text-primary-foreground hover:bg-primary-hover disabled:opacity-50"
-              disabled={status === "published" || isUpdatingStatus}
-              onClick={moveToNextStage}
-              type="button"
-            >
-              {isUpdatingStatus ? (
-                <>
-                  <Loader2 className="mr-1.5 size-3.5 animate-spin" /> Updating stage...
-                </>
-              ) : status === "ready" ? (
-                "Add URL & publish"
-              ) : status === "published" ? (
-                "Content is published"
-              ) : (
-                <>
-                  Move to next stage
-                  <ArrowRight aria-hidden="true" className="ml-1.5 size-3.5" />
-                </>
-              )}
-            </Button>
+            {canManageContent && (
+              <Button
+                className="h-9.5 w-full bg-primary text-[10px] font-semibold text-primary-foreground hover:bg-primary-hover disabled:opacity-50"
+                disabled={status === "published" || isUpdatingStatus}
+                onClick={moveToNextStage}
+                type="button"
+              >
+                {isUpdatingStatus ? (
+                  <>
+                    <Loader2 className="mr-1.5 size-3.5 animate-spin" /> Updating stage...
+                  </>
+                ) : status === "ready" ? (
+                  "Add URL & publish"
+                ) : status === "published" ? (
+                  "Content is published"
+                ) : (
+                  <>
+                    Move to next stage
+                    <ArrowRight aria-hidden="true" className="ml-1.5 size-3.5" />
+                  </>
+                )}
+              </Button>
+            )}
           </section>
         </aside>
       </div>

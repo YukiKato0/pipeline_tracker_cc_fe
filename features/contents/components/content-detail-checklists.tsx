@@ -17,6 +17,7 @@ export interface ContentDetailChecklistsProps {
   onAddTask: (e: FormEvent<HTMLFormElement>) => void;
   onToggleTask: (item: ChecklistPreviewItem) => void;
   onDeleteTask: (item: ChecklistPreviewItem) => void;
+  canModifyChecklist?: boolean;
 }
 
 export function ContentDetailChecklists({
@@ -27,6 +28,7 @@ export function ContentDetailChecklists({
   onAddTask,
   onToggleTask,
   onDeleteTask,
+  canModifyChecklist = true,
 }: ContentDetailChecklistsProps) {
   const completedTasks = checklist.filter((item) => item.is_completed).length;
   const progressPercent = checklist.length > 0 ? Math.round((completedTasks / checklist.length) * 100) : 0;
@@ -75,6 +77,7 @@ export function ContentDetailChecklists({
                 onClick={() => onDeleteTask(item)}
                 aria-label={`Hapus tugas ${item.task_name}`}
                 className="opacity-0 transition-opacity group-hover:opacity-100 text-muted-foreground hover:text-destructive"
+                disabled={!canModifyChecklist}
               >
                 <Trash2 size={13} aria-hidden="true" />
               </button>
@@ -83,7 +86,8 @@ export function ContentDetailChecklists({
         )}
       </div>
 
-      <form className="mt-4 flex gap-2" onSubmit={onAddTask}>
+      {canModifyChecklist && (
+        <form className="mt-4 flex gap-2" onSubmit={onAddTask}>
         <Input
           placeholder="Add a task checklist..."
           value={newTask}
@@ -105,8 +109,8 @@ export function ContentDetailChecklists({
             </>
           )}
         </Button>
-      </form>
+        </form>
+      )}
     </section>
   );
 }
-

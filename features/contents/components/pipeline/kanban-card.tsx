@@ -15,9 +15,14 @@ import { cn } from "@/lib/utils";
 export interface KanbanCardProps {
   content: ContentItem;
   isOverlay?: boolean;
+  currentUserRole?: string | null;
 }
 
-export function KanbanCard({ content, isOverlay = false }: KanbanCardProps) {
+export function KanbanCard({
+  content,
+  isOverlay = false,
+  currentUserRole,
+}: KanbanCardProps) {
   const {
     listeners,
     setNodeRef,
@@ -39,6 +44,7 @@ export function KanbanCard({ content, isOverlay = false }: KanbanCardProps) {
   };
 
   const platform = content.channel?.platform || "youtube";
+  const canViewDetails = currentUserRole !== "editor" || content.status === "editing";
 
   return (
     <div
@@ -79,12 +85,14 @@ export function KanbanCard({ content, isOverlay = false }: KanbanCardProps) {
         </div>
 
         <h4 className="mb-1 text-[13px] font-medium leading-snug text-studio-title-secondary">
+          {canViewDetails ? (
           <Link
             href={`/contents/${content.id}`}
             className="no-underline hover:text-primary hover:underline line-clamp-2"
           >
             {content.title}
           </Link>
+          ) : content.title}
         </h4>
 
         {content.description && (
@@ -108,15 +116,16 @@ export function KanbanCard({ content, isOverlay = false }: KanbanCardProps) {
         </div>
 
         <div className="flex items-center justify-end gap-1.5 pt-0.5">
-          <Button asChild size="sm" variant="outline" className="h-6.5 px-2 border-input text-[10px] text-primary">
-            <Link href={`/contents/${content.id}`}>
-              <Eye size={11} className="mr-1" aria-hidden="true" />
-              Details
-            </Link>
-          </Button>
+          {canViewDetails && (
+            <Button asChild size="sm" variant="outline" className="h-6.5 px-2 border-input text-[10px] text-primary">
+              <Link href={`/contents/${content.id}`}>
+                <Eye size={11} className="mr-1" aria-hidden="true" />
+                Details
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
     </div>
   );
 }
-
