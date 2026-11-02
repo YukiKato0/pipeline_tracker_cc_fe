@@ -79,27 +79,25 @@ export function WorkspaceSidebar({ currentUser, onLogout }: WorkspaceSidebarProp
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                isActive={pathname.startsWith("/channels")}
-                className="min-h-10.5 rounded-[7px] px-2.75 text-[13px] data-[active=true]:bg-studio-accent-active data-[active=true]:font-semibold data-[active=true]:text-studio-accent-active-text"
-              >
-                <Link href="/channels" aria-current={pathname.startsWith("/channels") ? "page" : undefined} onClick={closeMobileNavigation}>
-                  <Radio aria-hidden="true" size={18} strokeWidth={1.8} />
-                  <span>Channels</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+            {currentUser?.role !== "editor" && (
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname.startsWith("/channels")}
+                  className="min-h-10.5 rounded-[7px] px-2.75 text-[13px] data-[active=true]:bg-studio-accent-active data-[active=true]:font-semibold data-[active=true]:text-studio-accent-active-text"
+                >
+                  <Link href="/channels" aria-current={pathname.startsWith("/channels") ? "page" : undefined} onClick={closeMobileNavigation}>
+                    <Radio aria-hidden="true" size={18} strokeWidth={1.8} />
+                    <span>Channels</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            )}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="mt-auto flex-row items-center justify-between border-t border-border px-2 py-4.5 text-[10px] text-studio-subtle-text">
-        <span className="flex items-center gap-2">
-          <span className="inline-block size-2.5 flex-[0_0_10px] rounded-full border-[3px] border-feedback-success-border bg-feedback-success-pill-dot" aria-hidden="true" />
-          Active Session
-        </span>
+      <SidebarFooter className="mt-auto flex-row items-center justify-end border-t border-border px-2 py-4.5 text-[10px] text-studio-subtle-text">
         <Button
           onClick={onLogout}
           className="items-center gap-1 text-[10px]"
