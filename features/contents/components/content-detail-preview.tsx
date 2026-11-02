@@ -15,14 +15,7 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { ConfirmDialog } from "@/components/custom/confirm-dialog";
 import {
   CONTENT_FORMAT_LABELS,
   CONTENT_STATUSES,
@@ -94,6 +87,8 @@ export function ContentDetailPreview({
   const [isPublishing, setIsPublishing] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState<ChecklistPreviewItem | null>(null);
+  const [isDeletingTask, setIsDeletingTask] = useState(false);
   const [feedback, setFeedback] = useState<{
     type: "success" | "error";
     message: string;
@@ -169,12 +164,22 @@ export function ContentDetailPreview({
     }
   }
 
-  // Delete checklist item
-  async function handleDeleteChecklistItem(item: ChecklistPreviewItem) {
+  // Request delete checklist item (opens confirmation dialog)
+  function requestDeleteChecklistItem(item: ChecklistPreviewItem) {
+    setTaskToDelete(item);
+  }
+
+  // Confirm delete checklist item
+  async function handleConfirmDeleteTask() {
+    if (!taskToDelete) return;
+    const item = taskToDelete;
+    setIsDeletingTask(true);
     const previousChecklist = [...checklist];
     setChecklist((current) => current.filter((t) => t.id !== item.id));
 
     if (isSample) {
+      setIsDeletingTask(false);
+      setTaskToDelete(null);
       return;
     }
 
@@ -187,6 +192,9 @@ export function ContentDetailPreview({
         type: "error",
         message: getErrorMessage(error, "Gagal menghapus checklist item dari server."),
       });
+    } finally {
+      setIsDeletingTask(false);
+      setTaskToDelete(null);
     }
   }
 
@@ -396,7 +404,7 @@ export function ContentDetailPreview({
           <Button
             onClick={() => setIsDeleteDialogOpen(true)}
             variant="outline"
-            className="h-8 border-feedback-destructive-hover-border text-xs text-destructive hover:bg-feedback-destructive-hover-bg hover:text-feedback-destructive-hover-text"
+            className="h-8 border-feedback-destructive-hover-border text-xs text-destructive hover:bg-feedback-destructive-hover-bg hover:text-feedback-destructive-hover-text cursor-pointer"
             type="button"
           >
             <Trash2 size={13} className="mr-1.5" aria-hidden="true" />
@@ -443,7 +451,7 @@ export function ContentDetailPreview({
             isAddingTask={isAddingTask}
             onAddTask={handleAddChecklistItem}
             onToggleTask={handleToggleChecklistItem}
-            onDeleteTask={handleDeleteChecklistItem}
+            onDeleteTask={requestDeleteChecklistItem}
           />
 
           {/* Creative Brief */}
@@ -567,36 +575,45 @@ export function ContentDetailPreview({
         onSubmit={handlePublishContent}
       />
 
-      {/* Delete Content Modal */}
-      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent className="max-w-105 gap-4 rounded-lg max-[640px]:p-5">
-          <DialogHeader>
-            <DialogTitle className="font-serif text-[20px] text-destructive">Hapus Konten Ini?</DialogTitle>
-            <DialogDescription className="text-[11px] leading-relaxed text-muted-foreground">
-              Tindakan ini akan menghapus konten <strong>&quot;{content.title}&quot;</strong> beserta seluruh subtugas checklist dan riwayat log metrik secara permanen (Cascade Delete).
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="gap-2 max-[640px]:flex-col-reverse [&_button]:rounded-[5px] [&_button]:text-[10px]">
-            <Button onClick={() => setIsDeleteDialogOpen(false)} type="button" variant="outline" disabled={isDeleting}>
-              Batal
-            </Button>
-            <Button
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-60"
-              onClick={handleDeleteContent}
-              type="button"
-              disabled={isDeleting}
-            >
-              {isDeleting ? (
-                <>
-                  <Loader2 className="mr-1.5 size-3 animate-spin" /> Menghapus...
-                </>
-              ) : (
-                "Ya, Hapus Konten"
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* Delete Content Confirmation Modal */}
+      <ConfirmDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        title="Hapus Konten Ini?"
+        description={
+          <>
+            Tindakan ini akan menghapus konten <strong>&quot;{content.title}&quot;</strong> beserta seluruh subtugas checklist dan riwayat log metrik secara permanen (Cascade Delete).
+          </>
+        }
+        icon={<Trash2 className="size-5 text-destructive" />}
+        variant="destructive"
+        confirmText="Ya, Hapus Konten"
+        cancelText="Batal"
+        isLoading={isDeleting}
+        onConfirm={handleDeleteContent}
+      />
+
+      {/* Delete Checklist Item Confirmation Modal */}
+      <ConfirmDialog
+        open={taskToDelete !== null}
+        onOpenChange={(open) => {
+          if (!open) setTaskToDelete(null);
+        }}
+        title="Hapus Tugas Checklist?"
+        description={
+          taskToDelete ? (
+            <>
+              Apakah Anda yakin ingin menghapus tugas <strong>&quot;{taskToDelete.task_name}&quot;</strong>?
+            </>
+          ) : undefined
+        }
+        icon={<Trash2 className="size-5 text-destructive" />}
+        variant="destructive"
+        confirmText="Hapus Tugas"
+        cancelText="Batal"
+        isLoading={isDeletingTask}
+        onConfirm={handleConfirmDeleteTask}
+      />
     </div>
   );
 }

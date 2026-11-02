@@ -53,7 +53,7 @@ export async function updateContent(
   id: string | number,
   payload: UpdateContentPayload
 ): Promise<ContentDetailPreviewRecord> {
-  const result = await apiClient.patch<DataEnvelope<ContentDetailPreviewRecord>>(
+  const result = await apiClient.put<DataEnvelope<ContentDetailPreviewRecord>>(
     API_ROUTES.contents.update(id),
     payload
   );
