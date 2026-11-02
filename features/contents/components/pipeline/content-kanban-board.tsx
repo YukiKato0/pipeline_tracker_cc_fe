@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import {
   DndContext,
   DragOverlay,
@@ -29,16 +29,30 @@ import { KanbanCard } from "@/features/contents/components/pipeline/kanban-card"
 import { ContentCard } from "@/features/contents/components/pipeline/content-card";
 import { ContentEmptyState } from "@/features/contents/components/pipeline/content-empty-state";
 import { getErrorMessage } from "@/lib/api/errors";
+import {
+  getSession,
+  subscribeSession,
+  type SessionUser,
+} from "@/lib/auth/session";
 
 export interface ContentKanbanBoardProps {
   initialContents: ContentItem[];
   hasFilters: boolean;
 }
 
+function useCurrentUser(): SessionUser | null {
+  return useSyncExternalStore(
+    subscribeSession,
+    getSession,
+    () => null
+  );
+}
+
 export function ContentKanbanBoard({
   initialContents,
   hasFilters,
 }: ContentKanbanBoardProps) {
+  const currentUser = useCurrentUser();
   const [items, setItems] = useState<ContentItem[]>(initialContents);
   const [prevInitialContents, setPrevInitialContents] = useState(initialContents);
 
@@ -191,6 +205,7 @@ export function ContentKanbanBoard({
                   status={status}
                   stageIndex={index}
                   items={columnItems}
+                  currentUserRole={currentUser?.role}
                 />
               );
             })}
@@ -198,7 +213,11 @@ export function ContentKanbanBoard({
 
           <DragOverlay>
             {activeContent ? (
-              <KanbanCard content={activeContent} isOverlay />
+              <KanbanCard
+                content={activeContent}
+                isOverlay
+                currentUserRole={currentUser?.role}
+              />
             ) : null}
           </DragOverlay>
         </DndContext>
@@ -207,7 +226,11 @@ export function ContentKanbanBoard({
           {items.length > 0 ? (
             <div className="grid grid-cols-1 gap-4 p-6 sm:grid-cols-2 lg:grid-cols-3 max-[640px]:p-3.5">
               {items.map((content) => (
-                <ContentCard key={String(content.id)} content={content} />
+                <ContentCard
+                  key={String(content.id)}
+                  content={content}
+                  currentUserRole={currentUser?.role}
+                />
               ))}
             </div>
           ) : (
