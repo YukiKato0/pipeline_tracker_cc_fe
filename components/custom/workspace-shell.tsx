@@ -14,6 +14,7 @@ import {
   X,
 } from "lucide-react";
 import { clearSession, getSession, subscribeSession, type SessionUser } from "@/lib/auth/session";
+import { ConfirmDialog } from "@/components/custom/confirm-dialog";
 
 function ActiveWorkspaceNavigation({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
@@ -86,9 +87,11 @@ export function WorkspaceShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobileNavigationOpen, setIsMobileNavigationOpen] = useState(false);
+  const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const currentUser = useCurrentUser();
 
   function handleLogout() {
+    setIsLogoutDialogOpen(false);
     clearSession();
     router.push("/login");
   }
@@ -100,9 +103,8 @@ export function WorkspaceShell({ children }: { children: React.ReactNode }) {
       <aside
         id="desktop-sidebar"
         aria-label="Sidebar workspace"
-        className={`flex min-h-screen flex-[0_0_248px] flex-col border-r border-border bg-sidebar px-4.5 py-7 max-[800px]:flex-[0_0_218px] max-[800px]:px-3.5 max-[640px]:hidden ${
-          !isSidebarOpen ? "hidden" : ""
-        }`}
+        className={`flex min-h-screen flex-[0_0_248px] flex-col border-r border-border bg-sidebar px-4.5 py-7 max-[800px]:flex-[0_0_218px] max-[800px]:px-3.5 max-[640px]:hidden ${!isSidebarOpen ? "hidden" : ""
+          }`}
       >
         <WorkspaceBrand />
         <div className="my-9.5 mb-8.5 flex min-h-14.5 w-full items-center gap-2.5 rounded-lg border border-border bg-card p-2.25 text-left text-foreground shadow-xs">
@@ -121,7 +123,7 @@ export function WorkspaceShell({ children }: { children: React.ReactNode }) {
             Active Session
           </span>
           <button
-            onClick={handleLogout}
+            onClick={() => setIsLogoutDialogOpen(true)}
             className="flex cursor-pointer items-center gap-1 text-[10px] text-destructive hover:underline"
             type="button"
           >
@@ -175,11 +177,11 @@ export function WorkspaceShell({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-3.5">
             {currentUser && (
               <span suppressHydrationWarning className="text-[11px] font-medium text-studio-body max-[640px]:hidden">
-                {currentUser.name}
+                Hai, {currentUser.name}
               </span>
             )}
             <button
-              onClick={handleLogout}
+              onClick={() => setIsLogoutDialogOpen(true)}
               className="flex cursor-pointer items-center gap-1.5 rounded-[5px] border border-border bg-card px-2.5 py-1 text-[11px] font-medium text-studio-tag-text transition-colors hover:border-feedback-destructive-hover-border hover:bg-feedback-destructive-hover-bg hover:text-feedback-destructive-hover-text"
               type="button"
             >
@@ -210,6 +212,19 @@ export function WorkspaceShell({ children }: { children: React.ReactNode }) {
           {children}
         </main>
       </div>
+
+      {/* Confirmation Dialog for Logout */}
+      <ConfirmDialog
+        open={isLogoutDialogOpen}
+        onOpenChange={setIsLogoutDialogOpen}
+        title="Konfirmasi Logout"
+        description="Apakah Anda yakin ingin keluar dari sesi Creator Studio?"
+        icon={<LogOut className="size-5 text-destructive" />}
+        variant="destructive"
+        confirmText="Ya, Logout"
+        cancelText="Batal"
+        onConfirm={handleLogout}
+      />
     </div>
   );
 }
