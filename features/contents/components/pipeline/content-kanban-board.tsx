@@ -146,7 +146,7 @@ export function ContentKanbanBoard({
       {/* Toolbar with view switcher */}
       <div className="flex items-center justify-between px-6 py-3 border-b border-studio-card-border-subtle bg-studio-card-header/40">
         <span className="text-[11px] text-muted-foreground">
-          {viewMode === "board" ? "Tarik dan geser kartu antar kolom untuk mengubah statusnya." : "Menampilkan daftar konten dalam tata letak kisi."}
+          {viewMode === "board" ? "Drag and move cards between columns to change their status." : "Displays a list of content in a grid layout."}
         </span>
         <div className="flex items-center gap-1 rounded-md border border-input bg-card p-0.5">
           <Button
@@ -231,8 +231,8 @@ export function ContentKanbanBoard({
         }
         icon={<CircleAlert className="size-5 text-amber-600" />}
         variant="warning"
+        showCancelButton={false}
         confirmText="Mengerti"
-        cancelText="Tutup"
         onConfirm={() => setDragError(null)}
       />
     </div>
