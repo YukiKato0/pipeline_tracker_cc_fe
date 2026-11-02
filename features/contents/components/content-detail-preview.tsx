@@ -1,12 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
   ArrowRight,
-  CheckCircle2,
-  CircleAlert,
   ExternalLink,
   Loader2,
   Sparkles,
@@ -15,6 +13,7 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/custom/confirm-dialog";
+import { FeedbackAlert, type FeedbackAlertType } from "@/components/custom/feedback-alert";
 import {
   CONTENT_FORMAT_LABELS,
   CONTENT_STATUSES,
@@ -65,6 +64,7 @@ export function ContentDetailPreview({
   isSample = false,
 }: ContentDetailPreviewProps) {
   const router = useRouter();
+  const pathname = usePathname();
 
   const [status, setStatus] = useState<ContentStatus>(content.status);
   const [publishedUrl, setPublishedUrl] = useState(content.published_url ?? "");
@@ -89,9 +89,22 @@ export function ContentDetailPreview({
   const [taskToDelete, setTaskToDelete] = useState<ChecklistPreviewItem | null>(null);
   const [isDeletingTask, setIsDeletingTask] = useState(false);
   const [feedback, setFeedback] = useState<{
-    type: "success" | "error";
+    type: FeedbackAlertType;
     message: string;
   } | null>(null);
+  const routeKey = `${pathname}:${content.id}`;
+  const previousRouteKey = useRef(routeKey);
+
+  useEffect(() => {
+    if (previousRouteKey.current === routeKey) return;
+
+    previousRouteKey.current = routeKey;
+    const timeout = window.setTimeout(() => {
+      setFeedback(null);
+    }, 0);
+
+    return () => window.clearTimeout(timeout);
+  }, [routeKey]);
 
   const currentStatusIndex = CONTENT_STATUSES.indexOf(status);
 
@@ -417,21 +430,11 @@ export function ContentDetailPreview({
       )}
 
       {feedback && (
-        <Alert
-          className={`mb-5 rounded-[7px] px-3.5 py-3 text-[11px] ${feedback.type === "success"
-            ? "border-feedback-success-border bg-feedback-success-bg text-feedback-success-text"
-            : "border-feedback-destructive-border bg-feedback-destructive-bg text-feedback-destructive-text"
-            }`}
-          role={feedback.type === "error" ? "alert" : "status"}
-        >
-          {feedback.type === "success" ? (
-            <CheckCircle2 className="size-4 text-feedback-success-icon" aria-hidden="true" />
-          ) : (
-            <CircleAlert className="size-4 text-feedback-destructive-icon" aria-hidden="true" />
-          )}
-          <AlertTitle>{feedback.type === "success" ? "Berhasil" : "Pemberitahuan"}</AlertTitle>
-          <AlertDescription>{feedback.message}</AlertDescription>
-        </Alert>
+        <FeedbackAlert
+          type={feedback.type}
+          message={feedback.message}
+          onDismiss={() => setFeedback(null)}
+        />
       )}
 
       <div className="grid grid-cols-[minmax(0,1.45fr)_minmax(330px,0.85fr)] items-start gap-5 max-[920px]:grid-cols-1">
