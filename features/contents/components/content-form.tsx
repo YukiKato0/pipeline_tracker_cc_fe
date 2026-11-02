@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState, useSyncExternalStore, type FormEvent } from "react";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FeedbackAlert } from "@/components/custom/feedback-alert";
@@ -42,6 +42,15 @@ import {
   type ContentFormErrors,
   type ContentFormValues,
 } from "@/features/contents/schemas/content-form";
+import { getSession, subscribeSession, type SessionUser } from "@/lib/auth/session";
+
+function useCurrentUser(): SessionUser | null {
+  return useSyncExternalStore(
+    subscribeSession,
+    getSession,
+    () => null
+  );
+}
 
 export type ContentFormMode = "create" | "edit";
 
@@ -55,6 +64,7 @@ export function ContentForm({
   contentId,
 }: ContentFormProps) {
   const router = useRouter();
+  const currentUser = useCurrentUser();
   const [values, setValues] = useState<ContentFormValues>(initialContentFormValues);
   const [errors, setErrors] = useState<ContentFormErrors>({});
   const [channels, setChannels] = useState<ChannelRecord[]>([]);
@@ -62,6 +72,12 @@ export function ContentForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [successNotice, setSuccessNotice] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (currentUser?.role === "editor" && (mode === "create" || mode === "edit")) {
+      router.replace("/contents");
+    }
+  }, [currentUser, mode, router]);
 
   useEffect(() => {
     let ignore = false;
