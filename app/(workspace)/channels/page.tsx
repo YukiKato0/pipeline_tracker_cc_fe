@@ -62,6 +62,28 @@ export default function ChannelsPage() {
     }, 4000);
   }
 
+  function handleChannelUpdated(updatedChannel: ChannelRecord) {
+    setChannels((current) =>
+      current.map((channel) =>
+        String(channel.id) === String(updatedChannel.id) ? updatedChannel : channel
+      )
+    );
+    setSuccessBanner(`Channel ${updatedChannel.handle_name} berhasil diperbarui!`);
+    setTimeout(() => {
+      setSuccessBanner(null);
+    }, 3000);
+  }
+
+  function handleChannelDeleted(deletedChannel: ChannelRecord) {
+    setChannels((current) =>
+      current.filter((channel) => String(channel.id) !== String(deletedChannel.id))
+    );
+    setSuccessBanner(`Channel ${deletedChannel.handle_name} berhasil dihapus!`);
+    setTimeout(() => {
+      setSuccessBanner(null);
+    }, 4000);
+  }
+
   return (
     <div className="mx-auto max-w-342.5">
       <div className="mb-7 flex items-center justify-between max-[640px]:flex-col max-[640px]:items-stretch max-[640px]:gap-3.75">
@@ -106,7 +128,12 @@ export default function ChannelsPage() {
         </Alert>
       )}
 
-      <ChannelTable channels={channels} isLoading={isLoading} />
+      <ChannelTable
+        channels={channels}
+        isLoading={isLoading}
+        onUpdated={handleChannelUpdated}
+        onDeleted={handleChannelDeleted}
+      />
     </div>
   );
 }

@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
-import { CheckCircle2, CircleAlert, Loader2 } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FeedbackAlert } from "@/components/custom/feedback-alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -172,6 +172,7 @@ export function ContentForm({
     } catch (err: unknown) {
       const msg = getErrorMessage(err, "Gagal menyimpan konten ke backend.");
       setServerError(msg);
+    } finally {
       setIsSubmitting(false);
     }
   }
@@ -188,19 +189,23 @@ export function ContentForm({
   return (
     <div className="flex flex-col gap-4">
       {serverError && (
-        <Alert className="m-0 rounded-[7px] border-feedback-destructive-border bg-feedback-destructive-bg text-feedback-destructive-text **:data-[slot=alert-title]:text-[11px] **:data-[slot=alert-title]:font-semibold **:data-[slot=alert-description]:text-[10px] **:data-[slot=alert-description]:text-feedback-destructive-text" role="alert">
-          <CircleAlert aria-hidden="true" className="size-4 text-feedback-destructive-icon" />
-          <AlertTitle>Operasi Gagal</AlertTitle>
-          <AlertDescription>{serverError}</AlertDescription>
-        </Alert>
+        <FeedbackAlert
+          type="error"
+          title="Operasi Gagal"
+          message={serverError}
+          onDismiss={() => setServerError(null)}
+          className="m-0 **:data-[slot=alert-title]:text-[11px] **:data-[slot=alert-description]:text-[10px]"
+        />
       )}
 
       {successNotice && (
-        <Alert className="m-0 rounded-[7px] border-feedback-success-border bg-feedback-success-bg text-feedback-success-text **:data-[slot=alert-title]:text-[11px] **:data-[slot=alert-title]:font-semibold **:data-[slot=alert-description]:text-[10px] **:data-[slot=alert-description]:text-feedback-success-subtle" role="status">
-          <CheckCircle2 aria-hidden="true" className="size-4 text-feedback-success-icon" />
-          <AlertTitle>Sukses</AlertTitle>
-          <AlertDescription>{successNotice}</AlertDescription>
-        </Alert>
+        <FeedbackAlert
+          type="success"
+          title="Sukses"
+          message={successNotice}
+          onDismiss={() => setSuccessNotice(null)}
+          className="m-0 **:data-[slot=alert-title]:text-[11px] **:data-[slot=alert-description]:text-[10px]"
+        />
       )}
 
       <form className="flex flex-col gap-5 rounded-lg border border-studio-card-border bg-card/90 p-6.25 max-[640px]:gap-4 max-[640px]:p-4.25" noValidate onSubmit={handleSubmit}>

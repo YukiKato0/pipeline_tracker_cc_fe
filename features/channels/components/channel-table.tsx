@@ -7,13 +7,16 @@ import {
 } from "@/features/channels/types/channel";
 import { PlatformIcon } from "@/features/channels/components/platform-icon";
 import { ChannelCard } from "@/features/channels/components/channel-card";
+import { ChannelActions } from "@/features/channels/components/channel-actions";
 
 export interface ChannelTableProps {
   channels: ChannelRecord[];
   isLoading: boolean;
+  onUpdated: (channel: ChannelRecord) => void;
+  onDeleted: (channel: ChannelRecord) => void;
 }
 
-export function ChannelTable({ channels, isLoading }: ChannelTableProps) {
+export function ChannelTable({ channels, isLoading, onUpdated, onDeleted }: ChannelTableProps) {
   return (
     <section aria-labelledby="channel-directory-title" className="overflow-hidden rounded-lg border border-studio-card-border bg-card/90 shadow-sm">
       <div className="flex min-h-19.75 items-center justify-between border-b border-studio-card-border-subtle px-5.75 py-4 max-[640px]:px-3.75">
@@ -37,7 +40,7 @@ export function ChannelTable({ channels, isLoading }: ChannelTableProps) {
             Belum ada channel terdaftar.
           </p>
         ) : (
-          channels.map((channel) => <ChannelCard channel={channel} key={String(channel.id)} />)
+          channels.map((channel) => <ChannelCard channel={channel} key={String(channel.id)} onUpdated={onUpdated} onDeleted={onDeleted} />)
         )}
       </div>
 
@@ -48,12 +51,13 @@ export function ChannelTable({ channels, isLoading }: ChannelTableProps) {
               <th className="border-b border-studio-card-border-subtle bg-studio-card-header px-5 py-3.25 text-left text-[9px] font-semibold tracking-[0.08em] text-studio-label-muted uppercase" scope="col">Platform</th>
               <th className="border-b border-studio-card-border-subtle bg-studio-card-header px-5 py-3.25 text-left text-[9px] font-semibold tracking-[0.08em] text-studio-label-muted uppercase" scope="col">Channel name</th>
               <th className="border-b border-studio-card-border-subtle bg-studio-card-header px-5 py-3.25 text-left text-[9px] font-semibold tracking-[0.08em] text-studio-label-muted uppercase" scope="col">Status</th>
+              <th className="w-25 border-b border-studio-card-border-subtle bg-studio-card-header px-5 py-3.25 text-right text-[9px] font-semibold tracking-[0.08em] text-studio-label-muted uppercase" scope="col">Actions</th>
             </tr>
           </thead>
           <tbody>
             {isLoading ? (
               <tr>
-                <td colSpan={3}>
+                <td colSpan={4}>
                   <div className="flex min-h-48 flex-col items-center justify-center gap-2.5 py-8 text-center text-muted-foreground">
                     <Loader2 className="size-6 animate-spin text-primary" aria-hidden="true" />
                     <span className="text-[12px]">Memuat daftar channel dari backend...</span>
@@ -62,7 +66,7 @@ export function ChannelTable({ channels, isLoading }: ChannelTableProps) {
               </tr>
             ) : channels.length === 0 ? (
               <tr>
-                <td colSpan={3}>
+                <td colSpan={4}>
                   <div className="flex min-h-78.75 flex-col items-center justify-center px-5 py-8.5 text-center max-[640px]:min-h-75 max-[640px]:px-4">
                     <span className="mb-4.25 inline-flex size-13.5 items-center justify-center rounded-full border border-studio-icon-border bg-studio-icon-bg text-studio-icon-text" aria-hidden="true">
                       <Radio size={22} strokeWidth={1.7} />
@@ -102,6 +106,11 @@ export function ChannelTable({ channels, isLoading }: ChannelTableProps) {
                       CONNECTED
                     </span>
                   </td>
+                  <td className="border-b border-studio-card-border-subtle px-5 py-3.5 text-right">
+                    <div className="flex justify-end">
+                      <ChannelActions channel={channel} onUpdated={onUpdated} onDeleted={onDeleted} />
+                    </div>
+                  </td>
                 </tr>
               ))
             )}
@@ -111,4 +120,3 @@ export function ChannelTable({ channels, isLoading }: ChannelTableProps) {
     </section>
   );
 }
-
