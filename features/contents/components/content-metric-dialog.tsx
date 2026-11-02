@@ -45,12 +45,11 @@ export function ContentMetricDialog({
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         <Button
-          className="h-8 border-input px-2.75 text-xs text-studio-body"
+          className="h-8 border-input px-2.75 text-xs"
           size="sm"
           type="button"
-          variant="outline"
         >
-          <Sparkles aria-hidden="true" className="size-3.5 text-primary" />
+          <Sparkles aria-hidden="true" className="size-3.5" />
           <span>Record snapshot</span>
         </Button>
       </DialogTrigger>
