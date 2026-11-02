@@ -9,6 +9,8 @@ export const API_ROUTES = {
   channels: {
     list: "/v1/channels",
     create: "/v1/channels",
+    update: (id: string | number) => `/v1/channels/${id}`,
+    delete: (id: string | number) => `/v1/channels/${id}`,
   },
   contents: {
     list: (params?: { status?: string; channel_id?: string | number }) => {
