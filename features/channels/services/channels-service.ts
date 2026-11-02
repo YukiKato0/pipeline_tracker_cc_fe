@@ -5,6 +5,8 @@ import type {
   CreateChannelPayload,
 } from "@/features/channels/types/channel";
 
+type DataEnvelope<T> = T | { data: T };
+
 export async function getChannels(): Promise<ChannelRecord[]> {
   const result = await apiClient.get<ChannelRecord[] | { data: ChannelRecord[] }>(
     API_ROUTES.channels.list
@@ -32,4 +34,21 @@ export async function createChannel(payload: CreateChannelPayload): Promise<Chan
   }
 
   return result as ChannelRecord;
+}
+
+export async function updateChannel(id: string | number, payload: CreateChannelPayload): Promise<ChannelRecord> {
+  const result = await apiClient.put<DataEnvelope<ChannelRecord>>(
+    API_ROUTES.channels.update(id),
+    payload
+  );
+
+  if (result && typeof result === "object" && "data" in result && (result as { data: ChannelRecord }).data) {
+    return (result as { data: ChannelRecord }).data;
+  }
+
+  return result as ChannelRecord;
+}
+
+export async function deleteChannel(id: string | number): Promise<void> {
+  await apiClient.delete<void>(API_ROUTES.channels.delete(id));
 }
