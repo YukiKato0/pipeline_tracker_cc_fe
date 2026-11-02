@@ -13,12 +13,14 @@ export interface KanbanColumnProps {
   stageIndex: number;
   items: ContentItem[];
   isOver?: boolean;
+  currentUserRole?: string | null;
 }
 
 export function KanbanColumn({
   status,
   stageIndex,
   items,
+  currentUserRole,
 }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({
     id: `col-${status}`,
@@ -57,7 +59,11 @@ export function KanbanColumn({
       <div className="flex flex-1 flex-col gap-2.5 p-2.5 min-h-60 max-h-[calc(100vh-260px)] overflow-y-auto scrollbar-thin">
         <SortableContext items={cardIds} strategy={verticalListSortingStrategy}>
           {items.map((item) => (
-            <KanbanCard key={String(item.id)} content={item} />
+            <KanbanCard
+              key={String(item.id)}
+              content={item}
+              currentUserRole={currentUserRole}
+            />
           ))}
         </SortableContext>
 
@@ -82,4 +88,3 @@ export function KanbanColumn({
     </div>
   );
 }
-
