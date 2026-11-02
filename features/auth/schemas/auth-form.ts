@@ -1,5 +1,5 @@
 export type AuthMode = "login" | "register";
-export type AuthField = "name" | "email" | "password" | "confirmPassword";
+export type AuthField = "name" | "email" | "password" | "confirmPassword" | "role";
 export type AuthFormValues = Record<AuthField, string>;
 export type AuthFieldErrors = Partial<Record<AuthField, string>>;
 
@@ -8,6 +8,7 @@ export const initialAuthFormValues: AuthFormValues = {
   email: "",
   password: "",
   confirmPassword: "",
+  role: "creator",
 };
 
 export function validateAuthForm(
