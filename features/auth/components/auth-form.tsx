@@ -8,6 +8,13 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { createSession } from "@/lib/auth/session";
 import { getErrorMessage } from "@/lib/api/errors";
 import { loginUser, registerUser } from "@/features/auth/services/auth-service";
@@ -62,6 +69,7 @@ export function AuthForm({ mode }: AuthFormProps) {
           name: values.name.trim(),
           email: values.email.trim(),
           password: values.password,
+          role: values.role === "editor" ? "editor" : "creator",
         });
 
         let user = response.user || response.data?.user || {
@@ -174,7 +182,7 @@ export function AuthForm({ mode }: AuthFormProps) {
       <form className="flex flex-col gap-4.75" noValidate onSubmit={handleSubmit}>
         {isRegister && (
           <div className="flex min-w-0 flex-col gap-1.75">
-            <Label htmlFor="name">Nama</Label>
+            <Label htmlFor="name">Name</Label>
             <Input
               autoComplete="name"
               id="name"
@@ -183,10 +191,33 @@ export function AuthForm({ mode }: AuthFormProps) {
               aria-invalid={Boolean(errors.name)}
               aria-describedby={errors.name ? "name-error" : undefined}
               onChange={(event) => updateField("name", event.target.value)}
-              placeholder="Nama lengkap"
+              placeholder="Full Name"
               value={values.name}
+              className="bg-white"
             />
             {errors.name && <p className="m-0 text-[10px] leading-[1.4] text-feedback-destructive-subtle" id="name-error">{errors.name}</p>}
+          </div>
+        )}
+
+        {isRegister && (
+          <div className="flex min-w-0 flex-col gap-1.75">
+            <Label htmlFor="role">Role</Label>
+            <Select
+              value={values.role}
+              onValueChange={(value) => updateField("role", value)}
+              disabled={isSubmitting}
+            >
+              <SelectTrigger
+                id="role"
+                className="h-10.75 w-full rounded-[5px] border-input bg-card px-3 text-[12px] text-studio-title-secondary"
+              >
+                <SelectValue placeholder="Pilih role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="creator">Creator</SelectItem>
+                <SelectItem value="editor">Editor</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         )}
 
@@ -202,8 +233,9 @@ export function AuthForm({ mode }: AuthFormProps) {
             aria-invalid={Boolean(errors.email)}
             aria-describedby={errors.email ? "email-error" : undefined}
             onChange={(event) => updateField("email", event.target.value)}
-            placeholder="nama@email.com"
+            placeholder="name@email.com"
             value={values.email}
+            className="bg-white"
           />
           {errors.email && <p className="m-0 text-[10px] leading-[1.4] text-feedback-destructive-subtle" id="email-error">{errors.email}</p>}
         </div>
@@ -223,7 +255,7 @@ export function AuthForm({ mode }: AuthFormProps) {
               aria-invalid={Boolean(errors.password)}
               aria-describedby={errors.password ? "password-error" : undefined}
               onChange={(event) => updateField("password", event.target.value)}
-              placeholder="Masukkan password"
+              placeholder="Enter password"
               value={values.password}
               className="h-10.75 rounded-[5px] border-input bg-card px-3 text-[12px] text-studio-title-secondary shadow-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/15 aria-invalid:border-destructive"
             />
@@ -246,7 +278,7 @@ export function AuthForm({ mode }: AuthFormProps) {
 
         {isRegister && (
           <div className="flex min-w-0 flex-col gap-1.75">
-            <Label htmlFor="confirmPassword">Konfirmasi password</Label>
+            <Label htmlFor="confirmPassword">Confirm password</Label>
             <Input
               autoComplete="new-password"
               id="confirmPassword"
@@ -256,7 +288,7 @@ export function AuthForm({ mode }: AuthFormProps) {
               aria-invalid={Boolean(errors.confirmPassword)}
               aria-describedby={errors.confirmPassword ? "confirm-password-error" : undefined}
               onChange={(event) => updateField("confirmPassword", event.target.value)}
-              placeholder="Ulangi password"
+              placeholder="Repeat password"
               value={values.confirmPassword}
               className="h-10.75 rounded-[5px] border-input bg-card px-3 text-[12px] text-studio-title-secondary shadow-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/15 aria-invalid:border-destructive"
             />
@@ -292,4 +324,3 @@ export function AuthForm({ mode }: AuthFormProps) {
     </div>
   );
 }
-
