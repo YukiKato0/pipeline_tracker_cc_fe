@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Calendar, Edit2, Eye } from "lucide-react";
+import { Calendar, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PlatformIcon } from "@/features/channels/components/platform-icon";
@@ -9,10 +9,13 @@ import type { ContentItem } from "@/features/contents/types/content-detail";
 
 interface ContentCardProps {
   content: ContentItem;
+  currentUserRole?: string | null;
 }
 
-export function ContentCard({ content }: ContentCardProps) {
+export function ContentCard({ content, currentUserRole }: ContentCardProps) {
   const platform = content.channel?.platform || "youtube";
+  const canViewDetails =
+    currentUserRole !== "editor" || content.status === "editing";
 
   return (
     <div className="flex flex-col justify-between rounded-lg border border-studio-card-border bg-card p-4.5 transition-shadow hover:shadow-md">
@@ -55,19 +58,15 @@ export function ContentCard({ content }: ContentCardProps) {
           )}
         </div>
 
-        <div className="flex items-center justify-between gap-2 pt-1">
-          <Button asChild size="sm" variant="ghost" className="h-7 text-[10px] text-muted-foreground">
-            <Link href={`/contents/${content.id}/edit`}>
-              <Edit2 size={12} className="mr-1" aria-hidden="true" />
-              Edit
-            </Link>
-          </Button>
-          <Button asChild size="sm" variant="outline" className="h-7 border-input text-[10px] text-primary">
-            <Link href={`/contents/${content.id}`}>
-              <Eye size={12} className="mr-1" aria-hidden="true" />
-              Details
-            </Link>
-          </Button>
+        <div className="flex items-center justify-end gap-2 pt-1">
+          {canViewDetails && (
+            <Button asChild size="sm" variant="outline" className="h-7 border-input text-[10px] text-primary">
+              <Link href={`/contents/${content.id}`}>
+                <Eye size={12} className="mr-1" aria-hidden="true" />
+                Details
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
     </div>
