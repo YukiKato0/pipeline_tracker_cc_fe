@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { ListFilter, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +20,15 @@ import {
   type ContentFormat,
   type ContentStatus,
 } from "@/features/contents/types/content";
+import { getSession, subscribeSession, type SessionUser } from "@/lib/auth/session";
+
+function useCurrentUser(): SessionUser | null {
+  return useSyncExternalStore(
+    subscribeSession,
+    getSession,
+    () => null
+  );
+}
 
 interface ContentFilterFormProps {
   channels: ChannelRecord[];
@@ -42,6 +51,8 @@ export function ContentFilterForm({
 }: ContentFilterFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const currentUser = useCurrentUser();
+  const canFilterByChannel = currentUser?.role !== "editor";
 
   // State lokal untuk form filter
   const [status, setStatus] = useState<string>(selectedStatus);
@@ -60,7 +71,7 @@ export function ContentFilterForm({
     if (format) params.set("format", format);
     else params.delete("format");
 
-    if (channelId) params.set("channel_id", channelId);
+    if (canFilterByChannel && channelId) params.set("channel_id", channelId);
     else params.delete("channel_id");
 
     if (platform) params.set("platform", platform);
@@ -135,27 +146,29 @@ export function ContentFilterForm({
         </div>
 
         {/* Channel Filter */}
-        <div className="flex max-w-55 min-w-0 flex-[1_1_220px] flex-col gap-1.5 max-[640px]:col-span-full max-[640px]:max-w-none">
-          <label className="text-[10px] font-semibold text-muted-foreground" htmlFor="filter-channel-id">
-            Channel
-          </label>
-          <Select
-            value={channelId || "all"}
-            onValueChange={(val) => setChannelId(val === "all" ? "" : val)}
-          >
-            <SelectTrigger id="filter-channel-id" className="h-9.25 w-full min-w-0 rounded-[5px] border border-input bg-card px-2.5 text-[11px] text-studio-body">
-              <SelectValue placeholder="All channels" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All channels</SelectItem>
-              {channels.map((channel) => (
-                <SelectItem key={String(channel.id)} value={String(channel.id)}>
-                  {CHANNEL_PLATFORM_LABELS[channel.platform] || channel.platform} · {channel.handle_name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        {canFilterByChannel && (
+          <div className="flex max-w-55 min-w-0 flex-[1_1_220px] flex-col gap-1.5 max-[640px]:col-span-full max-[640px]:max-w-none">
+            <label className="text-[10px] font-semibold text-muted-foreground" htmlFor="filter-channel-id">
+              Channel
+            </label>
+            <Select
+              value={channelId || "all"}
+              onValueChange={(val) => setChannelId(val === "all" ? "" : val)}
+            >
+              <SelectTrigger id="filter-channel-id" className="h-9.25 w-full min-w-0 rounded-[5px] border border-input bg-card px-2.5 text-[11px] text-studio-body">
+                <SelectValue placeholder="All channels" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All channels</SelectItem>
+                {channels.map((channel) => (
+                  <SelectItem key={String(channel.id)} value={String(channel.id)}>
+                    {CHANNEL_PLATFORM_LABELS[channel.platform] || channel.platform} · {channel.handle_name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
 
         {/* Platform Filter */}
         <div className="flex max-w-55 min-w-0 flex-[1_1_180px] flex-col gap-1.5 max-[640px]:max-w-none">
@@ -213,7 +226,7 @@ export function ContentFilterForm({
               Format: {CONTENT_FORMAT_LABELS[selectedFormat]}
             </span>
           )}
-          {selectedChannelId && (
+          {canFilterByChannel && selectedChannelId && (
             <span className="rounded border border-studio-tag-border bg-studio-tag-bg px-2 py-0.5">
               Channel: {activeChannel ? `${CHANNEL_PLATFORM_LABELS[activeChannel.platform] || activeChannel.platform} · ${activeChannel.handle_name}` : selectedChannelId}
             </span>
