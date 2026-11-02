@@ -13,7 +13,6 @@ import {
   Trash2,
 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/custom/confirm-dialog";
 import {
@@ -392,12 +391,6 @@ export function ContentDetailPreview({
           </div>
         </div>
         <div className="flex flex-none items-center gap-2.25 max-[640px]:w-full max-[640px]:justify-between">
-          <Badge
-            className="h-8 border-studio-pill-border bg-studio-pill-bg text-[8px] font-bold tracking-[0.08em] text-studio-pill-text"
-            variant="outline"
-          >
-            {isSample ? "PREVIEW DATA" : "LIVE BACKEND"}
-          </Badge>
           <Button asChild className="h-8 border-input bg-card text-xs text-studio-body" variant="outline">
             <Link href={`/contents/${content.id}/edit`}>Edit details</Link>
           </Button>
@@ -466,7 +459,7 @@ export function ContentDetailPreview({
               </Button>
             </div>
             <p className="m-0 text-[11px] leading-[1.7] text-studio-body">
-              {content.description || <span className="italic text-muted-foreground">Belum ada deskripsi konten.</span>}
+              {content.description || <span className="italic text-muted-foreground">No content description yet.</span>}
             </p>
             <p className="mt-3 text-[10px] text-muted-foreground">
               Scheduled: {content.scheduled_date ? content.scheduled_date.slice(0, 10) : "Not set"}
@@ -492,22 +485,24 @@ export function ContentDetailPreview({
           )}
 
           {/* Performance Metrics Section */}
-          <ContentDetailMetrics
-            metrics={metrics}
-            metricHistory={metricHistory}
-            onOpenMetricDialog={() => setIsMetricDialogOpen(true)}
-            recordMetricSlot={
-              <ContentMetricDialog
-                isOpen={isMetricDialogOpen}
-                onOpenChange={setIsMetricDialogOpen}
-                metricValues={metricValues}
-                metricErrors={metricErrors}
-                onMetricChange={handleMetricChange}
-                isRecordingMetric={isRecordingMetric}
-                onSubmit={handleRecordMetrics}
-              />
-            }
-          />
+          {status === "published" && (
+            <ContentDetailMetrics
+              metrics={metrics}
+              metricHistory={metricHistory}
+              onOpenMetricDialog={() => setIsMetricDialogOpen(true)}
+              recordMetricSlot={
+                <ContentMetricDialog
+                  isOpen={isMetricDialogOpen}
+                  onOpenChange={setIsMetricDialogOpen}
+                  metricValues={metricValues}
+                  metricErrors={metricErrors}
+                  onMetricChange={handleMetricChange}
+                  isRecordingMetric={isRecordingMetric}
+                  onSubmit={handleRecordMetrics}
+                />
+              }
+            />
+          )}
         </div>
 
         <aside className="flex min-w-0 flex-col gap-4.25">

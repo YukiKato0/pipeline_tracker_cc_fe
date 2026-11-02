@@ -27,6 +27,8 @@ export interface ConfirmDialogProps {
   description?: React.ReactNode;
   /** Optional icon to display next to title or in header badge */
   icon?: React.ReactNode;
+  /** Whether to show the cancel button */
+  showCancelButton?: boolean;
   /** Visual variant: destructive (red), warning (amber), or default (primary) */
   variant?: "default" | "destructive" | "warning";
   /** Confirm button text (default: "Konfirmasi") */
@@ -54,6 +56,7 @@ export function ConfirmDialog({
   title,
   description,
   icon,
+  showCancelButton = true,
   variant = "default",
   confirmText = "Konfirmasi",
   cancelText = "Batal",
@@ -91,7 +94,7 @@ export function ConfirmDialog({
     <Dialog open={open} onOpenChange={loading ? undefined : onOpenChange}>
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
       <DialogContent
-        showCloseButton={!loading}
+        showCloseButton={showCancelButton && !loading}
         className={cn("max-w-105 gap-5 rounded-lg p-5.5 sm:max-w-md max-[640px]:p-5", className)}
       >
         <DialogHeader>
@@ -131,15 +134,17 @@ export function ConfirmDialog({
         {children && <div className="text-[12px] text-muted-foreground">{children}</div>}
 
         <DialogFooter className="gap-2 sm:gap-2 max-[640px]:flex-col-reverse [&_button]:rounded-[5px] [&_button]:text-[11px] [&_button]:font-medium">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleCancel}
-            disabled={loading}
-            className="h-8.5 px-3 cursor-pointer"
-          >
-            {cancelText}
-          </Button>
+          {showCancelButton && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleCancel}
+              disabled={loading}
+              className="h-8.5 px-3 cursor-pointer"
+            >
+              {cancelText}
+            </Button>
+          )}
           <Button
             type="button"
             variant={resolvedConfirmVariant}

@@ -82,7 +82,7 @@ export function ContentDetailMetrics({
       <div className="mt-4.5 space-y-2.5 min-[641px]:hidden">
         {metricHistory.length === 0 ? (
           <p className="py-6 text-center text-[11px] text-muted-foreground">
-            Belum ada snapshot metrik tercatat.
+            No metric snapshots have been recorded yet.
           </p>
         ) : (
           metricHistory.map((item) => (
@@ -106,7 +106,7 @@ export function ContentDetailMetrics({
             {metricHistory.length === 0 ? (
               <tr>
                 <td colSpan={5} className="py-6 text-center text-muted-foreground">
-                  Belum ada snapshot metrik tercatat.
+                  No metric snapshots have been recorded yet.
                 </td>
               </tr>
             ) : (

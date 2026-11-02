@@ -71,10 +71,10 @@ export function KanbanColumn({
             )}
           >
             <p className="m-0 text-[11px] font-medium">
-              {isOver ? "Lepaskan untuk memindahkan" : "Belum ada tugas"}
+              {isOver ? "Release to move" : "No tasks yet"}
             </p>
             <span className="mt-1 text-[9px] text-muted-foreground/80">
-              Geser tugas ke status {CONTENT_STATUS_LABELS[status]}
+              Move task to status {CONTENT_STATUS_LABELS[status]}
             </span>
           </div>
         )}

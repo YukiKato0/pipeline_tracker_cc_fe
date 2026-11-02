@@ -8,14 +8,14 @@ export default function NotFound() {
       <span className="mb-4 inline-flex size-14 items-center justify-center rounded-full border border-studio-icon-border bg-studio-icon-bg text-studio-icon-text">
         <FileQuestion aria-hidden="true" size={26} />
       </span>
-      <h2 className="m-0 font-serif text-2xl font-normal text-studio-heading">Halaman Tidak Ditemukan</h2>
+      <h2 className="m-0 font-serif text-2xl font-normal text-studio-heading">Page Not Found</h2>
       <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-        Halaman yang Anda tuju tidak tersedia atau telah dipindahkan.
+        The page you are trying to reach is unavailable or has been moved.
       </p>
       <Button asChild className="mt-6 text-xs" variant="outline">
         <Link href="/contents">
           <ArrowLeft aria-hidden="true" className="mr-1.5 size-3.5" />
-          Kembali ke Pipeline
+          Back to Pipeline
         </Link>
       </Button>
     </div>

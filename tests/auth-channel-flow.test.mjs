@@ -50,7 +50,7 @@ test("channel form strictly enforces allowed platforms and max 100 character han
     platform: "twitter",
     handle_name: "@tech",
   });
-  assert.equal(invalidPlatform.platform, "Pilih platform channel yang tersedia.");
+  assert.equal(invalidPlatform.platform, "Select an available channel platform.");
 
   const validYouTube = validateChannelForm({
     platform: "youtube",
