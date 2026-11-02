@@ -1,11 +1,14 @@
 import { CHANNEL_PLATFORM_LABELS, type ChannelRecord } from "@/features/channels/types/channel";
 import { PlatformIcon } from "@/features/channels/components/platform-icon";
+import { ChannelActions } from "@/features/channels/components/channel-actions";
 
 export interface ChannelCardProps {
   channel: ChannelRecord;
+  onUpdated?: (channel: ChannelRecord) => void;
+  onDeleted?: (channel: ChannelRecord) => void;
 }
 
-export function ChannelCard({ channel }: ChannelCardProps) {
+export function ChannelCard({ channel, onUpdated, onDeleted }: ChannelCardProps) {
   return (
     <article className="rounded-md border border-studio-card-border-subtle bg-card px-3.5 py-3">
       <div className="flex min-w-0 items-center gap-3">
@@ -23,6 +26,11 @@ export function ChannelCard({ channel }: ChannelCardProps) {
           CONNECTED
         </span>
       </div>
+      {(onUpdated || onDeleted) && (
+        <div className="mt-3 flex justify-end">
+          <ChannelActions channel={channel} onUpdated={onUpdated || (() => {})} onDeleted={onDeleted || (() => {})} />
+        </div>
+      )}
     </article>
   );
 }
