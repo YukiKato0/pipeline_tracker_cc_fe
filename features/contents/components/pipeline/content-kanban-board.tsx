@@ -15,8 +15,9 @@ import {
   type DragStartEvent,
 } from "@dnd-kit/core";
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
-import { Kanban, LayoutGrid } from "lucide-react";
+import { CircleAlert, Kanban, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/custom/confirm-dialog";
 import {
   CONTENT_STATUSES,
   type ContentStatus,
@@ -27,6 +28,7 @@ import { KanbanColumn } from "@/features/contents/components/pipeline/kanban-col
 import { KanbanCard } from "@/features/contents/components/pipeline/kanban-card";
 import { ContentCard } from "@/features/contents/components/pipeline/content-card";
 import { ContentEmptyState } from "@/features/contents/components/pipeline/content-empty-state";
+import { getErrorMessage } from "@/lib/api/errors";
 
 export interface ContentKanbanBoardProps {
   initialContents: ContentItem[];
@@ -48,6 +50,7 @@ export function ContentKanbanBoard({
 
   const [activeContent, setActiveContent] = useState<ContentItem | null>(null);
   const [viewMode, setViewMode] = useState<"board" | "grid">("board");
+  const [dragError, setDragError] = useState<{ contentTitle: string; message: string } | null>(null);
 
   // Setup sensors with distance activation constraint
   const sensors = useSensors(
@@ -130,7 +133,10 @@ export function ContentKanbanBoard({
             String(i.id) === activeId ? { ...i, status: previousStatus } : i
           )
         );
-        console.error(err)
+        setDragError({
+          contentTitle: sourceItem.title,
+          message: getErrorMessage(err, "Perubahan status tidak dapat disimpan. Coba lagi."),
+        });
       }
     }
   }
@@ -209,6 +215,26 @@ export function ContentKanbanBoard({
           )}
         </div>
       )}
+
+      <ConfirmDialog
+        open={dragError !== null}
+        onOpenChange={(open) => {
+          if (!open) setDragError(null);
+        }}
+        title="Status tidak berhasil diperbarui"
+        description={
+          dragError && (
+            <>
+              {dragError.message}
+            </>
+          )
+        }
+        icon={<CircleAlert className="size-5 text-amber-600" />}
+        variant="warning"
+        confirmText="Mengerti"
+        cancelText="Tutup"
+        onConfirm={() => setDragError(null)}
+      />
     </div>
   );
 }

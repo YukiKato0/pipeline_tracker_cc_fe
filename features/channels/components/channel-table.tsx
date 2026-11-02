@@ -6,6 +6,7 @@ import {
   type ChannelRecord,
 } from "@/features/channels/types/channel";
 import { PlatformIcon } from "@/features/channels/components/platform-icon";
+import { ChannelCard } from "@/features/channels/components/channel-card";
 
 export interface ChannelTableProps {
   channels: ChannelRecord[];
@@ -25,7 +26,22 @@ export function ChannelTable({ channels, isLoading }: ChannelTableProps) {
         </Badge>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="space-y-2.5 p-3.5 min-[641px]:hidden">
+        {isLoading ? (
+          <div className="flex min-h-48 flex-col items-center justify-center gap-2.5 py-8 text-center text-muted-foreground">
+            <Loader2 className="size-6 animate-spin text-primary" aria-hidden="true" />
+            <span className="text-[12px]">Memuat daftar channel dari backend...</span>
+          </div>
+        ) : channels.length === 0 ? (
+          <p className="py-8 text-center text-[12px] text-muted-foreground">
+            Belum ada channel terdaftar.
+          </p>
+        ) : (
+          channels.map((channel) => <ChannelCard channel={channel} key={String(channel.id)} />)
+        )}
+      </div>
+
+      <div className="hidden overflow-x-auto min-[641px]:block">
         <table className="w-full min-w-130 border-collapse">
           <thead>
             <tr>

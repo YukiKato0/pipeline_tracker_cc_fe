@@ -7,6 +7,7 @@ import type {
   ContentMetricValues,
 } from "@/features/contents/types/content-detail";
 import { formatNumber } from "@/lib/utils";
+import { ContentMetricCard } from "@/features/contents/components/content-metric-card";
 
 export interface ContentDetailMetricsProps {
   metrics: ContentMetricValues[];
@@ -78,7 +79,19 @@ export function ContentDetailMetrics({
         </div>
       </div>
 
-      <div className="mt-4.5 overflow-x-auto">
+      <div className="mt-4.5 space-y-2.5 min-[641px]:hidden">
+        {metricHistory.length === 0 ? (
+          <p className="py-6 text-center text-[11px] text-muted-foreground">
+            Belum ada snapshot metrik tercatat.
+          </p>
+        ) : (
+          metricHistory.map((item) => (
+            <ContentMetricCard key={String(item.id)} snapshot={item} />
+          ))
+        )}
+      </div>
+
+      <div className="mt-4.5 hidden overflow-x-auto min-[641px]:block">
         <table className="w-full border-collapse text-[11px]">
           <thead>
             <tr className="border-b border-studio-card-border-subtle bg-studio-card-header text-left text-[9px] font-semibold uppercase tracking-wider text-studio-label-muted">
