@@ -128,7 +128,7 @@ export function AddChannelDialog({ onChannelAdded }: AddChannelDialogProps) {
                 id="channel-platform"
                 disabled={isSubmitting}
               >
-                <SelectValue placeholder="Pilih platform" />
+                <SelectValue placeholder="Select a platform" />
               </SelectTrigger>
               <SelectContent>
                 {CHANNEL_PLATFORMS.map((platformName) => (

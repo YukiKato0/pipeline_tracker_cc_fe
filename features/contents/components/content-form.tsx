@@ -239,7 +239,7 @@ export function ContentForm({
                 id="content-channel-id"
                 className="h-10.5 w-full rounded-[5px] border-input bg-card text-[12px] text-studio-title-secondary"
               >
-                <SelectValue placeholder="Pilih channel" />
+                <SelectValue placeholder="Select a platform" />
               </SelectTrigger>
               <SelectContent>
                 {channels.map((channel) => (
@@ -269,7 +269,7 @@ export function ContentForm({
                 id="content-format-type"
                 className="h-10.5 w-full rounded-[5px] border-input bg-card text-[12px] text-studio-title-secondary"
               >
-                <SelectValue placeholder="Pilih format" />
+                <SelectValue placeholder="Select a platform" />
               </SelectTrigger>
               <SelectContent>
                 {CONTENT_FORMATS.map((format) => (

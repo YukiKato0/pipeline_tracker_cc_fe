@@ -52,7 +52,7 @@ export function ContentDetailChecklists({
         {checklist.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-6 text-center text-muted-foreground">
             <ClipboardCheck aria-hidden="true" className="mb-2 size-6 text-studio-icon-text opacity-40" />
-            <p className="m-0 text-[11px]">Belum ada tugas untuk tahap ini. Tambahkan tugas pertama Anda di bawah.</p>
+            <p className="m-0 text-[11px]">There are no tasks for this stage yet. Add your first task below.</p>
           </div>
         ) : (
           checklist.map((item) => (
@@ -85,7 +85,7 @@ export function ContentDetailChecklists({
 
       <form className="mt-4 flex gap-2" onSubmit={onAddTask}>
         <Input
-          placeholder="Tambah checklist tugas..."
+          placeholder="Add a task checklist..."
           value={newTask}
           onChange={(e) => onNewTaskChange(e.target.value)}
           disabled={isAddingTask}

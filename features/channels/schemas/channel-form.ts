@@ -19,7 +19,7 @@ export function validateChannelForm(
   const errors: ChannelFormErrors = {};
 
   if (!isChannelPlatform(values.platform)) {
-    errors.platform = "Pilih platform channel yang tersedia.";
+    errors.platform = "Select an available channel platform.";
   }
 
   const handleName = values.handle_name.trim();
