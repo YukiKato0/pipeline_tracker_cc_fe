@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Calendar, Edit2, Eye, GripVertical } from "lucide-react";
+import { Calendar, Eye, GripVertical } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Badge } from "@/components/ui/badge";
@@ -107,13 +107,7 @@ export function KanbanCard({ content, isOverlay = false }: KanbanCardProps) {
           )}
         </div>
 
-        <div className="flex items-center justify-between gap-1.5 pt-0.5">
-          <Button asChild size="sm" variant="ghost" className="h-6.5 px-2 text-[10px] text-muted-foreground">
-            <Link href={`/contents/${content.id}/edit`}>
-              <Edit2 size={11} className="mr-1" aria-hidden="true" />
-              Edit
-            </Link>
-          </Button>
+        <div className="flex items-center justify-end gap-1.5 pt-0.5">
           <Button asChild size="sm" variant="outline" className="h-6.5 px-2 border-input text-[10px] text-primary">
             <Link href={`/contents/${content.id}`}>
               <Eye size={11} className="mr-1" aria-hidden="true" />
