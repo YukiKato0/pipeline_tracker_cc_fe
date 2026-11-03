@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Clapperboard, Layers3, LogOut, Radio } from "lucide-react";
+import { Clapperboard, LayoutDashboard, Layers3, LogOut, Radio } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -67,6 +67,20 @@ export function WorkspaceSidebar({ currentUser, onLogout }: WorkspaceSidebarProp
             Workspace
           </SidebarGroupLabel>
           <SidebarMenu className="gap-2">
+            {currentUser?.role === "admin" && (
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname.startsWith("/dashboard")}
+                  className="min-h-10.5 rounded-[7px] px-2.75 text-[13px] data-[active=true]:bg-studio-accent-active data-[active=true]:font-semibold data-[active=true]:text-studio-accent-active-text"
+                >
+                  <Link href="/dashboard" aria-current={pathname.startsWith("/dashboard") ? "page" : undefined} onClick={closeMobileNavigation}>
+                    <LayoutDashboard aria-hidden="true" size={18} strokeWidth={1.8} />
+                    <span>Dashboard</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            )}
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild

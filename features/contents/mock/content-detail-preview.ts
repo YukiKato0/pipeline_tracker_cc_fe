@@ -1,4 +1,4 @@
-import type { ContentDetailPreviewRecord } from "@/features/contents/types/content-detail";
+import type { ContentDetailPreviewRecord } from "@/features/contents/types/content-detail.ts";
 import { channelPreviewRecords } from "../../channels/mock/channel-preview.ts";
 
 export const contentDetailPreview: ContentDetailPreviewRecord = {

@@ -86,12 +86,12 @@ export function KanbanCard({
 
         <h4 className="mb-1 text-[13px] font-medium leading-snug text-studio-title-secondary">
           {canViewDetails ? (
-          <Link
-            href={`/contents/${content.id}`}
-            className="no-underline hover:text-primary hover:underline line-clamp-2"
-          >
-            {content.title}
-          </Link>
+            <Link
+              href={`/contents/${content.id}`}
+              className="no-underline hover:text-primary hover:underline line-clamp-2"
+            >
+              {content.title}
+            </Link>
           ) : content.title}
         </h4>
 

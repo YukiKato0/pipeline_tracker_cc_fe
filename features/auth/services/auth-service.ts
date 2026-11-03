@@ -16,11 +16,11 @@ export async function registerUser(payload: RegisterPayload): Promise<AuthRespon
     data?.user ||
     (data?.email
       ? {
-          id: data.id ?? "",
-          name: data.name ?? payload.name,
-          email: data.email,
-          role: data.role ?? "creator",
-        }
+        id: data.id ?? "",
+        name: data.name ?? payload.name,
+        email: data.email,
+        role: data.role ?? "creator",
+      }
       : undefined);
 
   return {
@@ -39,11 +39,11 @@ export async function loginUser(payload: LoginPayload): Promise<AuthResponse> {
     data?.user ||
     (data?.email
       ? {
-          id: data.id ?? "",
-          name: data.name ?? "Creator",
-          email: data.email,
-          role: data.role ?? "creator",
-        }
+        id: data.id ?? "",
+        name: data.name ?? "Creator",
+        email: data.email,
+        role: data.role ?? "creator",
+      }
       : undefined);
 
   return {

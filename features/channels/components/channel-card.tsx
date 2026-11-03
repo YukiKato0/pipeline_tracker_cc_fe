@@ -28,7 +28,7 @@ export function ChannelCard({ channel, onUpdated, onDeleted }: ChannelCardProps)
       </div>
       {(onUpdated || onDeleted) && (
         <div className="mt-3 flex justify-end">
-          <ChannelActions channel={channel} onUpdated={onUpdated || (() => {})} onDeleted={onDeleted || (() => {})} />
+          <ChannelActions channel={channel} onUpdated={onUpdated || (() => { })} onDeleted={onDeleted || (() => { })} />
         </div>
       )}
     </article>
