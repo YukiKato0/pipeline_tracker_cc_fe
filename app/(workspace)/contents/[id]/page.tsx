@@ -52,7 +52,7 @@ async function ContentDetailRoute({ params }: { params: Promise<{ id: string }> 
     notFound();
   }
 
-  return <ContentDetailPreview content={data} />;
+  return <ContentDetailPreview key={`${data.id}:${JSON.stringify(data)}`} content={data} />;
 }
 
 export default function ContentDetailPage({ params }: { params: Promise<{ id: string }> }) {

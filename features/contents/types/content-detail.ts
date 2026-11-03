@@ -65,6 +65,7 @@ export type ContentDetailPreviewRecord = {
   published_date: string | null;
   status: ContentStatus;
   published_url?: string | null;
+  recording_url?: string | null;
   checklists: ChecklistPreviewItem[];
   metrics: ContentMetricSnapshot[];
 };
@@ -82,5 +83,6 @@ export type CreateContentPayload = {
 export type UpdateContentPayload = Partial<CreateContentPayload> & {
   status?: ContentStatus;
   published_url?: string | null;
+  recording_url?: string | null;
   published_date?: string | null;
 };

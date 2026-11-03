@@ -48,6 +48,7 @@ export async function apiRequest<T = unknown>(
   try {
     response = await fetch(url, {
       ...fetchOptions,
+      cache: fetchOptions.cache ?? "no-store",
       headers,
     });
   } catch (err: unknown) {

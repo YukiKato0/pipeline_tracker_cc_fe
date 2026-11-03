@@ -53,6 +53,7 @@ import { ContentPublishDialog } from "@/features/contents/components/content-pub
 import { ContentMetricDialog } from "@/features/contents/components/content-metric-dialog";
 import { ContentDetailChecklists } from "@/features/contents/components/content-detail-checklists";
 import { ContentDetailMetrics } from "@/features/contents/components/content-detail-metrics";
+import { ContentRecordingLink } from "@/features/contents/components/content-recording-link";
 import { getSession, subscribeSession, type SessionUser } from "@/lib/auth/session";
 
 function useCurrentUser(): SessionUser | null {
@@ -79,6 +80,7 @@ export function ContentDetailPreview({
 
   const [status, setStatus] = useState<ContentStatus>(content.status);
   const [publishedUrl, setPublishedUrl] = useState(content.published_url ?? "");
+  const [recordingUrl, setRecordingUrl] = useState(content.recording_url ?? "");
   const [isPublishDialogOpen, setIsPublishDialogOpen] = useState(false);
   const [publishUrlInput, setPublishUrlInput] = useState(content.published_url ?? "");
   const [publishError, setPublishError] = useState("");
@@ -105,6 +107,12 @@ export function ContentDetailPreview({
   } | null>(null);
   const routeKey = `${pathname}:${content.id}`;
   const previousRouteKey = useRef(routeKey);
+
+  useEffect(() => {
+    if (!isSample) {
+      router.refresh();
+    }
+  }, [content.id, isSample, router]);
 
   useEffect(() => {
     if (previousRouteKey.current === routeKey) return;
@@ -323,6 +331,24 @@ export function ContentDetailPreview({
     }
   }
 
+  async function handleSaveRecordingUrl(url: string) {
+    if (!isSample) {
+      try {
+        await updateContent(content.id, { recording_url: url || null });
+      } catch (err: unknown) {
+        throw new Error(getErrorMessage(err, "Gagal menyimpan link hasil recording ke server."));
+      }
+    }
+
+    setRecordingUrl(url);
+    setFeedback({
+      type: "success",
+      message: isSample
+        ? "Link hasil recording disimpan di preview lokal."
+        : "Link hasil recording berhasil disimpan ke server.",
+    });
+  }
+
   // Publish content
   async function handlePublishContent(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -527,6 +553,16 @@ export function ContentDetailPreview({
         </div>
 
         <aside className="flex min-w-0 flex-col gap-4.25">
+          {(status === "recording" || status === "editing") && (
+            <ContentRecordingLink
+              key={content.id}
+              contentId={content.id}
+              value={recordingUrl}
+              canEdit={canManageContent}
+              onSave={handleSaveRecordingUrl}
+            />
+          )}
+
           {/* Status & Lifecycle Transition */}
           <section aria-labelledby="status-title" className="min-w-0 rounded-lg border border-studio-card-border bg-card/90 p-5 max-[640px]:px-3.5 max-[640px]:py-4">
             <div className="mb-3.75 flex items-center justify-between gap-3">
@@ -554,29 +590,27 @@ export function ContentDetailPreview({
                 </li>
               ))}
             </ol>
-            {canManageContent && (
-              <Button
-                className="h-9.5 w-full bg-primary text-[10px] font-semibold text-primary-foreground hover:bg-primary-hover disabled:opacity-50"
-                disabled={status === "published" || isUpdatingStatus}
-                onClick={moveToNextStage}
-                type="button"
-              >
-                {isUpdatingStatus ? (
-                  <>
-                    <Loader2 className="mr-1.5 size-3.5 animate-spin" /> Updating stage...
-                  </>
-                ) : status === "ready" ? (
-                  "Add URL & publish"
-                ) : status === "published" ? (
-                  "Content is published"
-                ) : (
-                  <>
-                    Move to next stage
-                    <ArrowRight aria-hidden="true" className="ml-1.5 size-3.5" />
-                  </>
-                )}
-              </Button>
-            )}
+            <Button
+              className="h-9.5 w-full bg-primary text-[10px] font-semibold text-primary-foreground hover:bg-primary-hover disabled:opacity-50"
+              disabled={status === "published" || isUpdatingStatus}
+              onClick={moveToNextStage}
+              type="button"
+            >
+              {isUpdatingStatus ? (
+                <>
+                  <Loader2 className="mr-1.5 size-3.5 animate-spin" /> Updating stage...
+                </>
+              ) : status === "ready" ? (
+                "Add URL & publish"
+              ) : status === "published" ? (
+                "Content is published"
+              ) : (
+                <>
+                  Move to next stage
+                  <ArrowRight aria-hidden="true" className="ml-1.5 size-3.5" />
+                </>
+              )}
+            </Button>
           </section>
         </aside>
       </div>
