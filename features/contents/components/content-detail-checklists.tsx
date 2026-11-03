@@ -72,15 +72,17 @@ export function ContentDetailChecklists({
                   {item.task_name}
                 </span>
               </label>
-              <button
-                type="button"
-                onClick={() => onDeleteTask(item)}
-                aria-label={`Hapus tugas ${item.task_name}`}
-                className="opacity-0 transition-opacity group-hover:opacity-100 text-muted-foreground hover:text-destructive"
-                disabled={!canModifyChecklist}
-              >
-                <Trash2 size={13} aria-hidden="true" />
-              </button>
+              {canModifyChecklist && (
+                <button
+                  type="button"
+                  onClick={() => onDeleteTask(item)}
+                  aria-label={`Hapus tugas ${item.task_name}`}
+                  className="opacity-0 transition-opacity group-hover:opacity-100 text-muted-foreground hover:text-destructive"
+                  disabled={!canModifyChecklist}
+                >
+                  <Trash2 size={13} aria-hidden="true" />
+                </button>
+              )}
             </div>
           ))
         )}
@@ -88,27 +90,27 @@ export function ContentDetailChecklists({
 
       {canModifyChecklist && (
         <form className="mt-4 flex gap-2" onSubmit={onAddTask}>
-        <Input
-          placeholder="Add a task checklist..."
-          value={newTask}
-          onChange={(e) => onNewTaskChange(e.target.value)}
-          disabled={isAddingTask}
-          className="h-9.5 rounded-[5px] border-input bg-card text-[11px] text-studio-body"
-        />
-        <Button
-          type="submit"
-          disabled={isAddingTask || !newTask.trim()}
-          className="h-9.5 rounded-[5px] bg-primary px-3 text-[11px] font-semibold text-primary-foreground hover:bg-primary-hover disabled:opacity-50"
-        >
-          {isAddingTask ? (
-            <Loader2 className="size-3.5 animate-spin" aria-hidden="true" />
-          ) : (
-            <>
-              <Plus aria-hidden="true" className="mr-1 size-3.5" />
-              Add
-            </>
-          )}
-        </Button>
+          <Input
+            placeholder="Add a task checklist..."
+            value={newTask}
+            onChange={(e) => onNewTaskChange(e.target.value)}
+            disabled={isAddingTask}
+            className="h-9.5 rounded-[5px] border-input bg-card text-[11px] text-studio-body"
+          />
+          <Button
+            type="submit"
+            disabled={isAddingTask || !newTask.trim()}
+            className="h-9.5 rounded-[5px] bg-primary px-3 text-[11px] font-semibold text-primary-foreground hover:bg-primary-hover disabled:opacity-50"
+          >
+            {isAddingTask ? (
+              <Loader2 className="size-3.5 animate-spin" aria-hidden="true" />
+            ) : (
+              <>
+                <Plus aria-hidden="true" className="mr-1 size-3.5" />
+                Add
+              </>
+            )}
+          </Button>
         </form>
       )}
     </section>

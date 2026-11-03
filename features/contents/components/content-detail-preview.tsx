@@ -553,7 +553,7 @@ export function ContentDetailPreview({
         </div>
 
         <aside className="flex min-w-0 flex-col gap-4.25">
-          {(status === "recording" || status === "editing") && (
+          {(status === "recording" || status === "editing" || status === "ready") && (
             <ContentRecordingLink
               key={content.id}
               contentId={content.id}
